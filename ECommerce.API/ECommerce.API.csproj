@@ -21,10 +21,4 @@
         <ProjectReference Include="../ECommerce.Business/ECommerce.Business.csproj" />
         <ProjectReference Include="../ECommerce.Data/ECommerce.Data.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="DTO.cs" />
-    </ItemGroup>
-
-
 </Project>
