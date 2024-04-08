@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YBDCUTXsz0hTohouW4GSzcn2t/TtpNbRs46owA/NdkefWySQJ+XvxOqkOWmRdW/7Q5qVa4erhc7N9XXBJbCW8w==",
+  "dgSpecHash": "WPfQciK8qLYwi62L5W0qNQ3R/rYd8YTUcn2HFEdgKY/ZLan41X7EEaa0R5Htm4V+6l872VphSNwcAhNiYJ9KqQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.API\\E-Commerce.API.csproj",
+  "projectFilePath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.API\\ECommerce.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Franc\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.12\\microsoft.aspnetcore.openapi.7.0.12.nupkg.sha512",
     "C:\\Users\\Franc\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",

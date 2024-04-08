@@ -107,6 +107,26 @@
         "frameworkReferences": [
           "Microsoft.AspNetCore.App"
         ]
+      },
+      "ECommerce.Business/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/ECommerce.Business.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ECommerce.Business.dll": {}
+        }
+      },
+      "ECommerce.Data/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/ECommerce.Data.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ECommerce.Data.dll": {}
+        }
       }
     }
   },
@@ -460,10 +480,22 @@
         "swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",
         "swashbuckle.aspnetcore.swaggerui.nuspec"
       ]
+    },
+    "ECommerce.Business/1.0.0": {
+      "type": "project",
+      "path": "../ECommerce.Business/ECommerce.Business.csproj",
+      "msbuildProject": "../ECommerce.Business/ECommerce.Business.csproj"
+    },
+    "ECommerce.Data/1.0.0": {
+      "type": "project",
+      "path": "../ECommerce.Data/ECommerce.Data.csproj",
+      "msbuildProject": "../ECommerce.Data/ECommerce.Data.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "ECommerce.Business >= 1.0.0",
+      "ECommerce.Data >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 7.0.12",
       "Swashbuckle.AspNetCore >= 6.5.0"
     ]
@@ -474,11 +506,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.API\\E-Commerce.API.csproj",
-      "projectName": "E-Commerce.API",
-      "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.API\\E-Commerce.API.csproj",
+      "projectUniqueName": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.API\\ECommerce.API.csproj",
+      "projectName": "ECommerce.API",
+      "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.API\\ECommerce.API.csproj",
       "packagesPath": "C:\\Users\\Franc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.API\\obj\\",
+      "outputPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Franc\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -492,7 +524,20 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Franc\\RiderProjects\\E-Commerce\\ECommerce.Business\\ECommerce.Business.csproj": {
+              "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-Commerce\\ECommerce.Business\\ECommerce.Business.csproj"
+            },
+            "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Business\\ECommerce.Business.csproj": {
+              "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Business\\ECommerce.Business.csproj"
+            },
+            "C:\\Users\\Franc\\RiderProjects\\E-Commerce\\ECommerce.Data\\ECommerce.Data.csproj": {
+              "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-Commerce\\ECommerce.Data\\ECommerce.Data.csproj"
+            },
+            "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Data\\ECommerce.Data.csproj": {
+              "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Data\\ECommerce.Data.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

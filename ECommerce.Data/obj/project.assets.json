@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.Business\\E-Commerce.Business.csproj",
-      "projectName": "E-Commerce.Business",
-      "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.Business\\E-Commerce.Business.csproj",
+      "projectUniqueName": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Data\\ECommerce.Data.csproj",
+      "projectName": "ECommerce.Data",
+      "projectPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Data\\ECommerce.Data.csproj",
       "packagesPath": "C:\\Users\\Franc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\E-Commerce.Business\\obj\\",
+      "outputPath": "C:\\Users\\Franc\\RiderProjects\\E-commerce\\ECommerce.Data\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Franc\\AppData\\Roaming\\NuGet\\NuGet.Config"
