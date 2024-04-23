@@ -1,6 +1,5 @@
-﻿namespace E_Commerce.Busines.IServices;
+﻿namespace E_Commerce.Business.IServices;
 
-public class ISiteService
+public interface ISiteService
 {
-    
 }

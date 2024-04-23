@@ -1,6 +1,16 @@
-﻿namespace E_Commerce.Busines.IServices;
+﻿using E_Commerce.Business.Models;
 
-public class IAdminService
+namespace E_Commerce.Business.IServices;
+
+public interface IAdminService
 {
-    
+    public BusinessResult<IEnumerable<Admin>> GetAdmins();
+
+    public BusinessResult<Admin> GetAdminById(long id);
+
+    public BusinessResult<Admin> CreateAdmin(Admin item);
+
+    public BusinessResult UpdateAdmin(long id, Admin model);
+
+    public BusinessResult DeleteAdmin(long id);
 }

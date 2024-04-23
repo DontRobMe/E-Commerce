@@ -1,4 +1,4 @@
-﻿using E_Commerce.Busines.IServices;
+﻿using E_Commerce.Business.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
@@ -8,11 +8,11 @@ namespace E_Commerce.Controllers
     public class SiteController : ControllerBase
     {
         private readonly ILogger<SiteController> _logger;
-        private readonly ISiteService _projectService;
-        public SiteController(ILogger<SiteController> logger,ISiteService projectService)
+        private readonly ISiteService _siteService;
+        public SiteController(ILogger<SiteController> logger,ISiteService siteService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
+            _siteService = siteService ?? throw new ArgumentNullException(nameof(siteService));
         }
     }   
 }

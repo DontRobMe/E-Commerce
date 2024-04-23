@@ -1,6 +1,7 @@
-﻿namespace E_Commerce.Data.Repositories;
+﻿using E_Commerce.Business.IRepositories;
 
-public class DatabaseSiteRepository
+namespace E_Commerce.Data.Repositories;
+
+public class DatabaseSiteRepository : ISiteRepository
 {
-    
 }

@@ -1,4 +1,4 @@
-﻿namespace E_Commerce.Busines.Models;
+﻿namespace E_Commerce.Business.Models;
 
 public class Site
 {

@@ -1,4 +1,4 @@
-﻿namespace E_Commerce.Busines.Models
+﻿namespace E_Commerce.Business.Models
 {
     public class BusinessResult
     {
@@ -36,7 +36,7 @@
             return new BusinessResult(true, null);
         }
 
-        public static BusinessResult FromSuccess(BusinessResult<Client> businessResult)
+        public static BusinessResult FromSuccess(BusinessResult<Clients> businessResult)
         {
             return new BusinessResult(true, null);
         }
@@ -55,10 +55,16 @@
     public class BusinessResult<T> : BusinessResult // Hérite du résultat sans retour
     {
         public T? Result { get; set; }
+        public string Message { get; set; }
 
         public BusinessResult(bool isSuccess, BusinessError? error, T? result = default) : base(isSuccess, error)
         {
             Result = result;
+        }
+
+        public BusinessResult()
+        {
+            throw new NotImplementedException();
         }
 
         public static BusinessResult<T> FromSuccess(T? result)
@@ -87,9 +93,9 @@
             return new BusinessResult<Site>(true, null, businessResult);
         }
         
-        public static BusinessResult<Client> FromSuccess(Client businessResult)
+        public static BusinessResult<Clients> FromSuccess(Clients businessResult)
         {
-            return new BusinessResult<Client>(true, null, businessResult);
+            return new BusinessResult<Clients>(true, null, businessResult);
         }
         
         public static BusinessResult<Produit> FromSuccess(Produit businessResult)
@@ -100,6 +106,16 @@
         public static BusinessResult<T> FromError(string leProjetNExistePas)
         {
             return BusinessResult<T>.FromError(leProjetNExistePas, BusinessErrorReason.NotFound);
+        }
+
+        public static BusinessResult<Achats> Success(Achats achat)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static BusinessResult<Achats> Failure(string achatNotFound)
+        {
+            throw new NotImplementedException();
         }
     }
 

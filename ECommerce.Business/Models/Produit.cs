@@ -1,4 +1,4 @@
-﻿namespace E_Commerce.Busines.Models;
+﻿namespace E_Commerce.Business.Models;
 
 public class Produit
 {
@@ -7,9 +7,9 @@ public class Produit
     public string Description { get; set; }
     public double Price { get; set; }
     public int Stock { get; set; }
-    public string Image { get; set; }
+    //public string Image { get; set; }
     public string Category { get; set; }
     public int Rating { get; set; }
-    public Array Keys { get; set; }
-    public Array Values { get; set; }
+    public string Keys { get; set; }
+    
 }

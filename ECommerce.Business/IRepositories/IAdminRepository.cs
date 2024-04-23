@@ -1,6 +1,16 @@
-﻿namespace E_Commerce.Busines.IRepositories;
+﻿using E_Commerce.Business.Models;
 
-public class IAdminRepository
+namespace E_Commerce.Business.IRepositories;
+
+public interface IAdminRepository
 {
-    
+    void CreateAdmin(Admin newUser);
+        
+    void DeleteAdmin(long userId);
+        
+    IEnumerable<Admin>? GetAdmins();
+        
+    Admin GetAdminById(long? userId);
+        
+    BusinessResult<Admin> UpdateAdmin(long userId, Admin updatedUser);
 }

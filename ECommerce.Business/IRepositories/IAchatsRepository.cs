@@ -1,6 +1,15 @@
-﻿namespace E_Commerce.Busines.IRepositories;
+﻿using E_Commerce.Business.Models;
 
-public class IAchatsRepository
+namespace E_Commerce.Business.IRepositories;
+
+public interface IAchatsRepository
 {
-    
+    void CreateAchat(Achats newUser);
+        
+    void DeleteAchat(long userId);
+        
+    IEnumerable<Achats>? GetAchats();
+        
+    Achats GetAchatById(long? userId);
+        
 }

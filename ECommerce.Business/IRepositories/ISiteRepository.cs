@@ -1,6 +1,5 @@
-﻿namespace E_Commerce.Busines.IRepositories;
+﻿namespace E_Commerce.Business.IRepositories;
 
-public class ISiteRepository
+public interface ISiteRepository
 {
-    
 }

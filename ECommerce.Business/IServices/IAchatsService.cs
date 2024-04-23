@@ -1,6 +1,13 @@
-﻿namespace E_Commerce.Busines.IServices;
+﻿using E_Commerce.Business.Models;
 
-public class IAchatsService
+namespace E_Commerce.Business.IServices;
+
+public interface IAchatsService
 {
-    
+    public BusinessResult<IEnumerable<Achats>> GetAchats();
+
+    public BusinessResult<Achats> GetAchatById(long id);
+
+    public BusinessResult<Achats> CreateAchat(Achats item);
+    public BusinessResult DeleteAchat(long id);
 }
