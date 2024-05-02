@@ -13,9 +13,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=root;password=19911974aA,aA;SslMode=none"));
+builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=Gourbich;password=19911974aA,aA;SslMode=none"));
 
-// Ajoutez cette ligne pour tester la connexion à la base de données
 TestDatabaseConnection(builder.Services);
 
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -45,17 +44,14 @@ app.MapControllers();
 
 app.Run();
 
-// Méthode pour tester la connexion à la base de données
 void TestDatabaseConnection(IServiceCollection services)
 {
     try
     {
-        // Créez un scope de service pour obtenir une instance de DbContext
         using (var scope = services.BuildServiceProvider().CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
 
-            // Testez la connexion à la base de données en exécutant une requête simple
             var isConnected = dbContext.Database.CanConnect();
 
             if (isConnected)

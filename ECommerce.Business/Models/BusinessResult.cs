@@ -5,10 +5,6 @@
         public bool IsSuccess { get; set; }
         public BusinessError? Error { get; set; }
 
-        public BusinessResult()
-        {
-        }
-
         protected BusinessResult(bool isSuccess, BusinessError? error)
         {
             IsSuccess = isSuccess;
@@ -50,6 +46,11 @@
         {
             return new BusinessResult(true, null);
         }
+
+        public static BusinessResult FromError(string registrationResultMessage, BusinessError? registrationResultError)
+        {
+            return new BusinessResult(false, registrationResultError);
+        }
     }
 
     public class BusinessResult<T> : BusinessResult // Hérite du résultat sans retour
@@ -62,9 +63,11 @@
             Result = result;
         }
 
-        public BusinessResult()
+        public BusinessResult() : base(false, null)
         {
-            throw new NotImplementedException();
+            IsSuccess = false;
+            Message = string.Empty;
+            
         }
 
         public static BusinessResult<T> FromSuccess(T? result)

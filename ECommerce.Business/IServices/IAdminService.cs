@@ -8,7 +8,7 @@ public interface IAdminService
 
     public BusinessResult<Admin> GetAdminById(long id);
 
-    public BusinessResult<Admin> CreateAdmin(Admin item);
+    public BusinessResult CreateAdmin(Admin item);
 
     public BusinessResult UpdateAdmin(long id, Admin model);
 

@@ -4,7 +4,7 @@ namespace E_Commerce.Business.IRepositories;
 
 public interface IAdminRepository
 {
-    void CreateAdmin(Admin newUser);
+    BusinessResult<Admin> CreateAdmin(Admin newUser);
         
     void DeleteAdmin(long userId);
         

@@ -35,24 +35,6 @@ namespace E_Commerce.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        public IActionResult CreateUser(ClientDto.CreateClientDto user)
-        {
-            Clients userD = new Clients()
-            {
-                Name = user.Name,
-                LastName = user.LastName,
-                Email = user.Email,
-                Address = user.Address
-            };
-            var createdUser = _clientService.CreateClient(userD);
-            if (!createdUser.IsSuccess)
-            {
-                return BadRequest("Erreur lors de la création de l'utilisateur.");
-            }
-            return CreatedAtRoute("GetUserById", new { id = userD.Id }, userD);
-        }
-
         [HttpPut("{id:long}")]
         public IActionResult UpdateUser(long id, ClientDto.UpdateClientDto user)
         {
@@ -105,6 +87,36 @@ namespace E_Commerce.Controllers
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour du mot de passe.");
             }
             return Ok(updatedPassword);
+        }
+        
+        [HttpPost("login")]
+        public IActionResult Login(ClientDto.LoginClientDto login)
+        {
+            var user = _clientService.Login(login.Email, login.Password);
+            if (user == null)
+            {
+                return NotFound("Utilisateur non trouvé.");
+            }
+            return Ok(user);
+        }
+        
+        [HttpPost("register")]
+        public IActionResult Register(ClientDto.RegisterClientDto user)
+        {
+            Clients userD = new Clients()
+            {
+                Name = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                Address = user.Address,
+                Password = user.Password
+            };
+            var createdUser = _clientService.Register(userD);
+            if (!createdUser.IsSuccess)
+            {
+                return BadRequest("le client existe deja");
+            }
+            return Ok(createdUser);
         }
     }   
 }

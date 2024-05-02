@@ -12,10 +12,25 @@ public class DatabaseProduitRepository : IProduitRepository
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
-    public void CreateProduit(Produit newProduit)
-    {
+    public BusinessResult<Produit> CreateProduit(Produit newProduit)
+    { 
+        var produit = _dbContext.Produit?.FirstOrDefault(u => u.Name == newProduit.Name);
+        if (produit != null)
+        {
+            return new BusinessResult<Produit>
+            {
+                IsSuccess = false,
+                Message = "Produit already exists"
+            };
+        }
         _dbContext.Produit?.Add(newProduit);
-        _dbContext.SaveChanges();   
+        _dbContext.SaveChanges();
+        return new BusinessResult<Produit>
+        {
+            IsSuccess = true,
+            Message = "Produit created successfully",
+            Result = newProduit
+        };
     }
 
     public void DeleteProduit(long produitId)
@@ -61,11 +76,6 @@ public class DatabaseProduitRepository : IProduitRepository
             Result = produit
         };
     }
-    /* "name": "paul",
-  "lastName": "de jean",
-  "email": "moi@moi.com",
-  "password": "19911974",
-  "birth": "10/10/2001"*/
     public BusinessResult<Produit> UpdateRating(long ProduitId, int rating)
     {
         var produit = _dbContext.Produit?.FirstOrDefault(u => u.Id == ProduitId);
@@ -107,5 +117,10 @@ public class DatabaseProduitRepository : IProduitRepository
             Message = "Keys updated successfully",
             Result = produit
         };
+    }
+    
+    public Produit GetProduitByName(string name)
+    {
+        return _dbContext.Produit?.FirstOrDefault(u => u.Name == name)!;
     }
 }

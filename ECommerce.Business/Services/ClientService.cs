@@ -25,14 +25,6 @@ namespace E_Commerce.Business.Services
             return BusinessResult<Clients>.FromSuccess(user);
         }
 
-
-        public BusinessResult<Clients> CreateClient(Clients item)
-        {
-            _clientRepository.CreateClient(item);
-            return BusinessResult<Clients>.FromSuccess(item);
-        }
-
-
         public BusinessResult UpdateClient(long id, Clients model)
         {
             var updatedUser = _clientRepository.UpdateClient(id, model);
@@ -45,7 +37,7 @@ namespace E_Commerce.Business.Services
             _clientRepository.DeleteClient(id);
             return BusinessResult.FromSuccess();
         }
-        
+
         public BusinessResult UpdateWallet(long id, int amount)
         {
             var user = _clientRepository.GetClientById(id);
@@ -53,12 +45,29 @@ namespace E_Commerce.Business.Services
             _clientRepository.UpdateClient(id, user);
             return BusinessResult.FromSuccess();
         }
-        
+
         public BusinessResult UpdatePassword(long id, string password)
         {
             var user = _clientRepository.GetClientById(id);
             user.Password = password;
             _clientRepository.UpdateClient(id, user);
+            return BusinessResult.FromSuccess();
+        }
+
+        public BusinessResult Login(string email, string password)
+        {
+            var user = _clientRepository.Login(email, password);
+            return BusinessResult.FromSuccess(user);
+        }
+
+        public BusinessResult Register(Clients newUser)
+        {
+            var registrationResult = _clientRepository.Register(newUser);
+    
+            if (!registrationResult.IsSuccess)
+            {
+                return BusinessResult.FromError(registrationResult.Message, registrationResult.Error);
+            }
             return BusinessResult.FromSuccess();
         }
     }

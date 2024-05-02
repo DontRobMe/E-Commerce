@@ -38,7 +38,7 @@ namespace E_Commerce.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("CreateAdmin")]
         public IActionResult CreateAdmin(AdminDto.CreateAdminDto user)
         {
             Admin userD = new Admin()
@@ -52,10 +52,10 @@ namespace E_Commerce.Controllers
             var createdUser = _adminService.CreateAdmin(userD);
             if (!createdUser.IsSuccess)
             {
-                return BadRequest("Erreur lors de la création de l'utilisateur.");
+                return BadRequest("Admin déjà existant.");
             }
 
-            return CreatedAtRoute("GetAdminById", new { id = userD.Id }, userD);
+            return Ok(createdUser);
         }
 
         [HttpPut("{id:long}")]
@@ -83,7 +83,6 @@ namespace E_Commerce.Controllers
             {
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la suppression.");
             }
-
             return NoContent();
         }
     }
