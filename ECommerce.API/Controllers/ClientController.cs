@@ -97,7 +97,13 @@ namespace E_Commerce.Controllers
             {
                 return NotFound("Utilisateur non trouvé.");
             }
-            return Ok(user);
+            var loggedInResponse = new 
+            {
+                Message = "Connexion réussie.",
+                User = user
+            };
+
+            return Ok(loggedInResponse);
         }
         
         [HttpPost("register")]
