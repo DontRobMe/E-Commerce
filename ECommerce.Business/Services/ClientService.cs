@@ -1,4 +1,5 @@
-﻿using E_Commerce.Business.IRepositories;
+﻿using E_Commerce.Business.DTO;
+using E_Commerce.Business.IRepositories;
 using E_Commerce.Business.IServices;
 using E_Commerce.Business.Models;
 
@@ -57,6 +58,10 @@ namespace E_Commerce.Business.Services
         public BusinessResult Login(string email, string password)
         {
             var user = _clientRepository.Login(email, password);
+            if (!user.IsSuccess)
+            {
+                return BusinessResult.FromError(user.Message, user.Error);              
+            }
             return BusinessResult.FromSuccess(user);
         }
 
@@ -69,6 +74,24 @@ namespace E_Commerce.Business.Services
                 return BusinessResult.FromError(registrationResult.Message, registrationResult.Error);
             }
             return BusinessResult.FromSuccess();
+        }
+        
+        public BusinessResult AddToWishlist(long userId, List<Produit> updatedWishList)
+        {
+            var user = _clientRepository.GetClientById(userId);
+            user.WishList = updatedWishList;
+            var wishlist = _clientRepository.AddToWishlist(user.Id, user.WishList);
+            if(wishlist.IsSuccess == false)
+            {
+                return BusinessResult.FromError(wishlist.Message, wishlist.Error);
+            }
+            return BusinessResult.FromSuccess();
+        }
+
+        public BusinessResult<Clients> GetWishlist(long id)
+        {
+            var user = _clientRepository.GetWishlist(id);
+            return BusinessResult.FromSuccess(user);
         }
     }
 }

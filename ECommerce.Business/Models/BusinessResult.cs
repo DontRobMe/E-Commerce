@@ -32,9 +32,9 @@
             return new BusinessResult(true, null);
         }
 
-        public static BusinessResult FromSuccess(BusinessResult<Clients> businessResult)
+        public static BusinessResult<Clients> FromSuccess(BusinessResult<Clients> businessResult)
         {
-            return new BusinessResult(true, null);
+            return new BusinessResult<Clients>(true, null, businessResult.Result);
         }
 
         public static BusinessResult FromSuccess(BusinessResult<Site> existingProject)
@@ -50,6 +50,16 @@
         public static BusinessResult FromError(string registrationResultMessage, BusinessError? registrationResultError)
         {
             return new BusinessResult(false, registrationResultError);
+        }
+
+        public static BusinessResult FromError(string productAlreadyInWishlist)
+        {
+            return new BusinessResult(false, null);
+        }
+
+        public static BusinessResult FromSuccess(List<Produit> userWishList)
+        {
+            return new BusinessResult(true, null);
         }
     }
 

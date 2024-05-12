@@ -19,4 +19,8 @@ public interface IClientService
     public BusinessResult Login(string email, string password);
     
     public BusinessResult Register(Clients newUser);
+    
+    public BusinessResult AddToWishlist(long id, List<Produit> updatedWishList);
+    
+    public BusinessResult<Clients> GetWishlist(long id);
 }

@@ -47,4 +47,10 @@ public class AdminService : IAdminService
         _adminRepository.DeleteAdmin(id);
         return BusinessResult.FromSuccess();
     }
+    
+public BusinessResult LoginAdmin(string email, string password)
+    {
+        var admin = _adminRepository.LoginAdmin(email, password);
+        return BusinessResult.FromSuccess(admin);
+    }
 }

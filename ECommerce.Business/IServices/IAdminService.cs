@@ -13,4 +13,6 @@ public interface IAdminService
     public BusinessResult UpdateAdmin(long id, Admin model);
 
     public BusinessResult DeleteAdmin(long id);
+    
+    public BusinessResult LoginAdmin(string email, string password);
 }

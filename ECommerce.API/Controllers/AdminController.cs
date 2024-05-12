@@ -19,7 +19,7 @@ namespace E_Commerce.Controllers
             _adminService = adminService ?? throw new ArgumentNullException(nameof(adminService));
         }
 
-        [HttpGet]
+        [HttpGet("getadmins")]
         public IActionResult GetAdmins()
         {
             var users = _adminService.GetAdmins();
@@ -84,6 +84,17 @@ namespace E_Commerce.Controllers
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la suppression.");
             }
             return NoContent();
+        }
+        
+        [HttpPost("loginadmin")]
+        public IActionResult LoginAdmin(AdminDto.LoginAdminDto login)
+        {
+            var user = _adminService.LoginAdmin(login.Email, login.Password);
+            if (user == null)
+            {
+                return NotFound("Email ou mot de passe incorrect.");
+            }
+            return Ok(user);
         }
     }
 }

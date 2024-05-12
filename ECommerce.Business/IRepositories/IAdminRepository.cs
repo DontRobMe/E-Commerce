@@ -13,4 +13,6 @@ public interface IAdminRepository
     Admin GetAdminById(long? userId);
         
     BusinessResult<Admin> UpdateAdmin(long userId, Admin updatedUser);
+    
+    BusinessResult<Admin> LoginAdmin(string email, string password);
 }

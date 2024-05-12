@@ -13,7 +13,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=Gourbich;password=19911974aA,aA;SslMode=none"));
+builder.Services.AddDbContext<MyDbContext>(options =>
+    options.UseSqlServer("Server=tcp:ecommerceb2dev.database.windows.net,1433;Initial Catalog=instantgaming;Persist Security Info=False;User ID=gourbalo;Password=19911974aA,aA;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+        builder => builder.MigrationsAssembly(typeof(MyDbContext).Assembly.FullName)));
 
 TestDatabaseConnection(builder.Services);
 

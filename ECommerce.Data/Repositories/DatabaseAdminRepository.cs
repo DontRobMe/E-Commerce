@@ -95,4 +95,23 @@ public class DatabaseAdminRepository : IAdminRepository
             Result = user
         };
     }
+    
+    public BusinessResult<Admin> LoginAdmin(string email, string password)
+    {
+        var user = _dbContext.Admin?.FirstOrDefault(u => u.Email == email && u.Password == password);
+        if (user == null)
+        {
+            return new BusinessResult<Admin>
+            {
+                IsSuccess = false,
+                Message = "User not found"
+            };
+        }
+        return new BusinessResult<Admin>
+        {
+            IsSuccess = true,
+            Message = "User found",
+            Result = user
+        };
+    }
 }
