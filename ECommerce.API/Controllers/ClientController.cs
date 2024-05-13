@@ -123,7 +123,8 @@ namespace E_Commerce.Controllers
                 LastName = user.LastName,
                 Email = user.Email,
                 Address = user.Address,
-                Password = user.Password
+                Password = user.Password,
+                birth = user.birth
             };
             var createdUser = _clientService.Register(userD);
             if (!createdUser.IsSuccess)
@@ -146,7 +147,7 @@ namespace E_Commerce.Controllers
             return Ok(updatedWishlist);
         }
 
-        [HttpGet("{id:long}/wishlist")]
+        [HttpGet("{id:long}/wishlists")]
         public IActionResult GetWishlist(long id)
         {
             var wishlist = _clientService.GetWishlist(id);

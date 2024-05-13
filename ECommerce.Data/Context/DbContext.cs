@@ -1,4 +1,4 @@
-﻿using E_Commerce.Business.Models;
+using E_Commerce.Business.Models;
 using Microsoft.EntityFrameworkCore;
 namespace E_Commerce.Data.Context;
 public class MyDbContext : DbContext

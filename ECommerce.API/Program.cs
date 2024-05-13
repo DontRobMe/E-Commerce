@@ -1,5 +1,3 @@
-using System;
-using System.Threading.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using E_Commerce.Business.IRepositories;
 using E_Commerce.Business.IServices;
@@ -10,14 +8,9 @@ using E_Commerce.Data.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<MyDbContext>(options =>
-    options.UseSqlServer("Server=tcp:ecommerceb2dev.database.windows.net,1433;Initial Catalog=instantgaming;Persist Security Info=False;User ID=gourbalo;Password=19911974aA,aA;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-        builder => builder.MigrationsAssembly(typeof(MyDbContext).Assembly.FullName)));
-
-TestDatabaseConnection(builder.Services);
+builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=m;password=19911974;SslMode=none"));
 
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAchatsService, AchatService>();
@@ -30,6 +23,18 @@ builder.Services.AddScoped<IAdminRepository, DatabaseAdminRepository>();
 builder.Services.AddScoped<IProduitRepository, DatabaseProduitRepository>();
 builder.Services.AddScoped<ISiteRepository, DatabaseSiteRepository>();
 
+// Configuration CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:4200") // Remplacez par l'URL de votre application Angular
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -39,35 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowSpecificOrigin"); // Ajoutez le middleware CORS ici
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
-
-void TestDatabaseConnection(IServiceCollection services)
-{
-    try
-    {
-        using (var scope = services.BuildServiceProvider().CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-
-            var isConnected = dbContext.Database.CanConnect();
-
-            if (isConnected)
-            {
-                Console.WriteLine("La connexion à la base de données a réussi.");
-            }
-            else
-            {
-                Console.WriteLine("Échec de la connexion à la base de données.");
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Erreur lors de la connexion à la base de données : {ex.Message}");
-    }
-}
