@@ -11,13 +11,14 @@ namespace E_Commerce.Controllers
     {
         private readonly ILogger<ClientController> _logger;
         private readonly IClientService _clientService;
-        public ClientController(ILogger<ClientController> logger,IClientService clientService)
+
+        public ClientController(ILogger<ClientController> logger, IClientService clientService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
         }
-        
-        [HttpGet]
+
+        [HttpGet("getusers")]
         public IActionResult GetUsers()
         {
             var users = _clientService.GetClients();
@@ -28,29 +29,12 @@ namespace E_Commerce.Controllers
         public IActionResult GetUserById(long id)
         {
             var user = _clientService.GetClientById(id);
-            if (user == null)
+            if (user.IsSuccess == false)
             {
                 return NotFound($"Utilisateur avec l'ID {id} introuvable.");
             }
-            return Ok(user);
-        }
 
-        [HttpPost]
-        public IActionResult CreateUser(ClientDto.CreateClientDto user)
-        {
-            Clients userD = new Clients()
-            {
-                Name = user.Name,
-                LastName = user.LastName,
-                Email = user.Email,
-                Address = user.Address
-            };
-            var createdUser = _clientService.CreateClient(userD);
-            if (!createdUser.IsSuccess)
-            {
-                return BadRequest("Erreur lors de la création de l'utilisateur.");
-            }
-            return CreatedAtRoute("GetUserById", new { id = userD.Id }, userD);
+            return Ok(user);
         }
 
         [HttpPut("{id:long}")]
@@ -61,14 +45,16 @@ namespace E_Commerce.Controllers
                 Name = user.Name,
                 LastName = user.LastName,
                 Email = user.Email,
-                Address = user.Address
+                Address = user.Address,
+                birth = user.birth
             };
-            
+
             var updatedUser = _clientService.UpdateClient(id, userD);
             if (updatedUser == null)
             {
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour.");
             }
+
             return Ok(updatedUser);
         }
 
@@ -80,11 +66,11 @@ namespace E_Commerce.Controllers
             {
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la suppression.");
             }
+
             return NoContent();
         }
-        
-        
-        
+
+
         [HttpPut("{id:long}/wallet")]
         public IActionResult UpdateWallet(long id, ClientDto.WalletClientDto wallet)
         {
@@ -93,9 +79,10 @@ namespace E_Commerce.Controllers
             {
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour du portefeuille.");
             }
+
             return Ok(updatedWallet);
         }
-        
+
         [HttpPut("{id:long}/password")]
         public IActionResult UpdatePassword(long id, ClientDto.PasswordClientDto password)
         {
@@ -104,7 +91,72 @@ namespace E_Commerce.Controllers
             {
                 return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour du mot de passe.");
             }
+
             return Ok(updatedPassword);
         }
-    }   
+
+        [HttpPost("login")]
+        public IActionResult Login(ClientDto.LoginClientDto login)
+        {
+            var user = _clientService.Login(login.Email, login.Password);
+            if (user.IsSuccess == false)
+            {
+                return BadRequest("Email ou mot de passe incorrect.");
+            }
+
+
+            var loggedInResponse = new
+            {
+                Message = "Connexion réussie.",
+                User = user
+            };
+
+            return Ok(loggedInResponse);
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register(ClientDto.RegisterClientDto user)
+        {
+            Clients userD = new Clients()
+            {
+                Name = user.Name,
+                LastName = user.LastName,
+                Email = user.Email,
+                Address = user.Address,
+                Password = user.Password,
+                birth = user.birth
+            };
+            var createdUser = _clientService.Register(userD);
+            if (!createdUser.IsSuccess)
+            {
+                return BadRequest("le client existe deja");
+            }
+
+            return Ok(createdUser);
+        }
+
+        [HttpPut("{id:long}/wishlist")]
+        public IActionResult AddToWishlist(long id, ClientDto.WishlistClientDto wishlist)
+        {
+            var updatedWishlist = _clientService.AddToWishlist(id, wishlist.WishList);
+            if (updatedWishlist.IsSuccess == false)
+            {
+                return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour de la liste de souhaits.");
+            }
+
+            return Ok(updatedWishlist);
+        }
+
+        [HttpGet("{id:long}/wishlists")]
+        public IActionResult GetWishlist(long id)
+        {
+            var wishlist = _clientService.GetWishlist(id);
+            if (wishlist.IsSuccess == false)
+            {
+                return NotFound($"Utilisateur avec l'ID {id} introuvable pour la liste de souhaits.");
+            }
+
+            return Ok(wishlist);
+        }
+    }
 }

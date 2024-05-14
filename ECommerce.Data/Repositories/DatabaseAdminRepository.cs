@@ -12,10 +12,25 @@ public class DatabaseAdminRepository : IAdminRepository
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
-    public void CreateAdmin(Admin newUser)
+    public BusinessResult<Admin> CreateAdmin(Admin newUser)
     {
+        var admin = _dbContext.Admin?.FirstOrDefault(u => u.Email == newUser.Email);
+        if (admin != null)
+        {
+            return new BusinessResult<Admin>
+            {
+                IsSuccess = false,
+                Message = "admin already exists"
+            };
+        }
         _dbContext.Admin?.Add(newUser);
         _dbContext.SaveChanges();
+        return new BusinessResult<Admin>
+        {
+            IsSuccess = true,
+            Message = "admin created successfully",
+            Result = newUser
+        };
     }
 
     public void DeleteAdmin(long userId)
@@ -77,6 +92,25 @@ public class DatabaseAdminRepository : IAdminRepository
         {
             IsSuccess = true,
             Message = "User updated successfully",
+            Result = user
+        };
+    }
+    
+    public BusinessResult<Admin> LoginAdmin(string email, string password)
+    {
+        var user = _dbContext.Admin?.FirstOrDefault(u => u.Email == email && u.Password == password);
+        if (user == null)
+        {
+            return new BusinessResult<Admin>
+            {
+                IsSuccess = false,
+                Message = "User not found"
+            };
+        }
+        return new BusinessResult<Admin>
+        {
+            IsSuccess = true,
+            Message = "User found",
             Result = user
         };
     }

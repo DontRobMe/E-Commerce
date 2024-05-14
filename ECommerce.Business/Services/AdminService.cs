@@ -24,11 +24,17 @@ public class AdminService : IAdminService
         return BusinessResult<Admin>.FromSuccess(admin);
     }
 
-    public BusinessResult<Admin> CreateAdmin(Admin item)
+    public BusinessResult CreateAdmin(Admin item)
     {
-        _adminRepository.CreateAdmin(item);
-        return BusinessResult<Admin>.FromSuccess(item);
+        var adminResult = _adminRepository.CreateAdmin(item);
+        
+        if (!adminResult.IsSuccess)
+        {
+            return BusinessResult.FromError(adminResult.Message, adminResult.Error);
+        }
+        return BusinessResult.FromSuccess();    
     }
+    
 
     public BusinessResult UpdateAdmin(long id, Admin model)
     {
@@ -40,5 +46,11 @@ public class AdminService : IAdminService
     {
         _adminRepository.DeleteAdmin(id);
         return BusinessResult.FromSuccess();
+    }
+    
+public BusinessResult LoginAdmin(string email, string password)
+    {
+        var admin = _adminRepository.LoginAdmin(email, password);
+        return BusinessResult.FromSuccess(admin);
     }
 }

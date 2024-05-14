@@ -5,7 +5,7 @@ public class AchatsDto
     public class CreateAchatsDto
     {
         public string Produit { get; set; }
-        public string Facture { get; set; }
+        public byte[] Facture { get; set; }
         public int prix { get; set; }
         public int quantité { get; set; }
         public string Date { get; set; }

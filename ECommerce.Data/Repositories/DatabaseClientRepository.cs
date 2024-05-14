@@ -13,12 +13,6 @@ public class DatabaseClientRepository : IClientRepository
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public void CreateClient(Clients newUser)
-    {
-        _dbContext.Client?.Add(newUser);
-        _dbContext.SaveChanges();
-    }
-
     public void DeleteClient(long userId)
     {
         var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
@@ -52,6 +46,7 @@ public class DatabaseClientRepository : IClientRepository
         user.LastName = updatedUser.LastName;
         user.Email = updatedUser.Email;
         user.Address = updatedUser.Address;
+        user.birth = updatedUser.birth;
         _dbContext.SaveChanges();
         return new BusinessResult<Clients>
         {
@@ -99,6 +94,86 @@ public class DatabaseClientRepository : IClientRepository
         {
             IsSuccess = true,
             Message = "Password updated successfully",
+            Result = user
+        };
+    }
+    
+    public BusinessResult<Clients> Login(string email, string password)
+    {
+        var user = _dbContext.Client?.FirstOrDefault(u => u.Email == email && u.Password == password);
+        if (user == null)
+        {
+            return new BusinessResult<Clients>
+            {
+                IsSuccess = false,
+                Message = "User not found"
+            };
+        }
+        return new BusinessResult<Clients>
+        {
+            IsSuccess = true,
+            Message = "User found",
+            Result = user
+        };
+    }
+    
+    public BusinessResult<Clients> Register(Clients newUser)
+    {
+        var user = _dbContext.Client?.FirstOrDefault(u => u.Email == newUser.Email);
+        if (user != null)
+        {
+            return new BusinessResult<Clients>
+            {
+                IsSuccess = false,
+                Message = "User already exists"
+            };
+        }
+        _dbContext.Client?.Add(newUser);
+        _dbContext.SaveChanges();
+        return new BusinessResult<Clients>
+        {
+            IsSuccess = true,
+            Message = "User created successfully",
+            Result = newUser
+        };
+    }
+    
+    public BusinessResult<Clients> AddToWishlist(long userId, List<Produit> updatedWishList)
+    {
+        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            return new BusinessResult<Clients>
+            {
+                IsSuccess = false,
+                Message = "User not found"
+            };
+        }
+        user.WishList = updatedWishList;
+        _dbContext.SaveChanges();
+        return new BusinessResult<Clients>
+        {
+            IsSuccess = true,
+            Message = "Wishlist updated successfully",
+            Result = user
+        };
+    }
+    
+    public BusinessResult<Clients> GetWishlist(long userId)
+    {
+        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            return new BusinessResult<Clients>
+            {
+                IsSuccess = false,
+                Message = "User not found"
+            };
+        }
+        return new BusinessResult<Clients>
+        {
+            IsSuccess = true,
+            Message = "Wishlist found",
             Result = user
         };
     }

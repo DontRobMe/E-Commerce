@@ -8,9 +8,11 @@ public interface IProduitService
 
     public BusinessResult<Produit> GetProduitById(long id);
 
-    public BusinessResult<Produit> CreateProduit(Produit item);
+    public BusinessResult CreateProduit(Produit item);
 
     public BusinessResult UpdateProduit(long id, Produit model);
 
     public BusinessResult DeleteProduit(long id);
+    
+    public BusinessResult<Produit> GetProduitByName(string name);
 }

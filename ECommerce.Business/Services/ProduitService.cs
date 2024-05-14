@@ -24,10 +24,15 @@ public class ProduitService : IProduitService
         return BusinessResult<Produit>.FromSuccess(produit);
     }
 
-    public BusinessResult<Produit> CreateProduit(Produit item)
+    public BusinessResult CreateProduit(Produit item)
     {
-        _produitRepository.CreateProduit(item);
-        return BusinessResult<Produit>.FromSuccess(item);
+        var produit = _produitRepository.CreateProduit(item);
+
+        if (!produit.IsSuccess)
+        {
+            return BusinessResult.FromError(produit.Message, produit.Error);
+        }
+        return BusinessResult.FromSuccess();
     }
 
     public BusinessResult UpdateProduit(long id, Produit model)
@@ -40,5 +45,11 @@ public class ProduitService : IProduitService
     {
         _produitRepository.DeleteProduit(id);
         return BusinessResult.FromSuccess();
+    }
+    
+    public BusinessResult<Produit> GetProduitByName(string name)
+    {
+        var produit = _produitRepository.GetProduitByName(name);
+        return BusinessResult<Produit>.FromSuccess(produit);
     }
 }

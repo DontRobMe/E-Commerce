@@ -48,16 +48,16 @@ namespace E_Commerce.Controllers
                 Stock = user.Stock,
                 //Image = user.Image,
                 Category = user.Category,
-                Rating = user.Rating,
+                //Rating = user.Rating,
                 Keys = user.Keys
             };
             var createdUser = _produitService.CreateProduit(userD);
             if (!createdUser.IsSuccess)
             {
-                return BadRequest("Erreur lors de la création de l'utilisateur.");
+                return BadRequest("Produit déjà existant.");
             }
 
-            return CreatedAtRoute("GetProduitById", new { id = userD.Id }, userD);
+            return Ok(createdUser);
         }
 
         [HttpPut("{id:long}")]
@@ -87,6 +87,18 @@ namespace E_Commerce.Controllers
             }
 
             return NoContent();
+        }
+        
+        [HttpGet("{name}" , Name = "GetProduitByName")]
+        public IActionResult GetProduitByName(string name)
+        {
+            var user = _produitService.GetProduitByName(name);
+            if (user == null)
+            {
+                return NotFound($"Produit avec le nom {name} introuvable.");
+            }
+
+            return Ok(user);
         }
     }
 }

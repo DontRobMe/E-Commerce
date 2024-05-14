@@ -1,4 +1,5 @@
-﻿using E_Commerce.Business.IRepositories;
+﻿using E_Commerce.Business.DTO;
+using E_Commerce.Business.IRepositories;
 using E_Commerce.Business.IServices;
 using E_Commerce.Business.Models;
 
@@ -25,14 +26,6 @@ namespace E_Commerce.Business.Services
             return BusinessResult<Clients>.FromSuccess(user);
         }
 
-
-        public BusinessResult<Clients> CreateClient(Clients item)
-        {
-            _clientRepository.CreateClient(item);
-            return BusinessResult<Clients>.FromSuccess(item);
-        }
-
-
         public BusinessResult UpdateClient(long id, Clients model)
         {
             var updatedUser = _clientRepository.UpdateClient(id, model);
@@ -45,7 +38,7 @@ namespace E_Commerce.Business.Services
             _clientRepository.DeleteClient(id);
             return BusinessResult.FromSuccess();
         }
-        
+
         public BusinessResult UpdateWallet(long id, int amount)
         {
             var user = _clientRepository.GetClientById(id);
@@ -53,13 +46,52 @@ namespace E_Commerce.Business.Services
             _clientRepository.UpdateClient(id, user);
             return BusinessResult.FromSuccess();
         }
-        
+
         public BusinessResult UpdatePassword(long id, string password)
         {
             var user = _clientRepository.GetClientById(id);
             user.Password = password;
             _clientRepository.UpdateClient(id, user);
             return BusinessResult.FromSuccess();
+        }
+
+        public BusinessResult Login(string email, string password)
+        {
+            var user = _clientRepository.Login(email, password);
+            if (!user.IsSuccess)
+            {
+                return BusinessResult.FromError(user.Message, user.Error);              
+            }
+            return BusinessResult.FromSuccess(user);
+        }
+
+        public BusinessResult Register(Clients newUser)
+        {
+            var registrationResult = _clientRepository.Register(newUser);
+    
+            if (!registrationResult.IsSuccess)
+            {
+                return BusinessResult.FromError(registrationResult.Message, registrationResult.Error);
+            }
+            return BusinessResult.FromSuccess();
+        }
+        
+        public BusinessResult AddToWishlist(long userId, List<Produit> updatedWishList)
+        {
+            var user = _clientRepository.GetClientById(userId);
+            user.WishList = updatedWishList;
+            var wishlist = _clientRepository.AddToWishlist(user.Id, user.WishList);
+            if(wishlist.IsSuccess == false)
+            {
+                return BusinessResult.FromError(wishlist.Message, wishlist.Error);
+            }
+            return BusinessResult.FromSuccess();
+        }
+
+        public BusinessResult<Clients> GetWishlist(long id)
+        {
+            var user = _clientRepository.GetWishlist(id);
+            return BusinessResult.FromSuccess(user);
         }
     }
 }
