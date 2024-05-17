@@ -1,4 +1,6 @@
-﻿namespace E_Commerce.Business.DTO;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace E_Commerce.Business.DTO;
 
 public class ProduitDto
 {
@@ -9,7 +11,9 @@ public class ProduitDto
         public double Price { get; set; }
         public int Stock { get; set; }
         public string Category { get; set; } 
-        public string Keys { get; set; }
+        public List<string> productcodes { get; set; }
+        public int Rating { get; set; }
+        public byte[] Image { get; set; }
     }
     
     public class UpdateProduitDto

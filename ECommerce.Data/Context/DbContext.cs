@@ -20,5 +20,6 @@ public class MyDbContext : DbContext
         
         modelBuilder.Entity<Site>().HasNoKey();
         base.OnModelCreating(modelBuilder);
+        
     }
 }

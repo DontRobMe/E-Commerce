@@ -18,7 +18,7 @@ namespace E_Commerce.Controllers
             _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
         }
 
-        [HttpGet]
+        [HttpGet("GetProduits")]
         public IActionResult GetProduits()
         {
             var users = _produitService.GetProduits();
@@ -37,7 +37,7 @@ namespace E_Commerce.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("CreateProduit")]
         public IActionResult CreateProduit(ProduitDto.CreateProduitDto user)
         {
             Produit userD = new Produit()
@@ -46,10 +46,10 @@ namespace E_Commerce.Controllers
                 Description = user.Description,
                 Price = user.Price,
                 Stock = user.Stock,
-                //Image = user.Image,
+                Image = user.Image,
                 Category = user.Category,
-                //Rating = user.Rating,
-                Keys = user.Keys
+                Rating = user.Rating,
+                productcodes = user.productcodes
             };
             var createdUser = _produitService.CreateProduit(userD);
             if (!createdUser.IsSuccess)

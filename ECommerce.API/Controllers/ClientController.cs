@@ -103,15 +103,7 @@ namespace E_Commerce.Controllers
             {
                 return BadRequest("Email ou mot de passe incorrect.");
             }
-
-
-            var loggedInResponse = new
-            {
-                Message = "Connexion réussie.",
-                User = user
-            };
-
-            return Ok(loggedInResponse);
+            return Ok(user);
         }
 
         [HttpPost("register")]

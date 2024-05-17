@@ -66,7 +66,7 @@ public class DatabaseProduitRepository : IProduitRepository
         produit.Description = updatedProduit.Description;
         produit.Price = updatedProduit.Price;
         produit.Stock = updatedProduit.Stock;
-        //produit.Image = updatedProduit.Image;
+        produit.Image = updatedProduit.Image;
         produit.Category = updatedProduit.Category;
         _dbContext.SaveChanges();
         return new BusinessResult<Produit>
@@ -100,7 +100,7 @@ public class DatabaseProduitRepository : IProduitRepository
     //update keys
     public BusinessResult<Produit> UpdateKeys(long ProduitId, string keys)
     {
-        var produit = _dbContext.Produit?.FirstOrDefault(u => u.Id == ProduitId);
+        var produit = _dbContext.Produit.FirstOrDefault(u => u.Id == ProduitId);
         if (produit == null)
         {
             return new BusinessResult<Produit>
@@ -109,15 +109,33 @@ public class DatabaseProduitRepository : IProduitRepository
                 Message = "Produit not found"
             };
         }
-        produit.Keys = keys;
+
+        var keysList = keys.Split(',').Select(k => k.Trim()).ToList();
+
+        foreach (var key in keysList)
+        {
+            if (produit.productcodes.Contains(key))
+            {
+                return new BusinessResult<Produit>
+                {
+                    IsSuccess = false,
+                    Message = $"La clé '{key}' existe déjà pour ce produit"
+                };
+            }
+        }
+
+        produit.productcodes.AddRange(keysList);
+
         _dbContext.SaveChanges();
+
         return new BusinessResult<Produit>
         {
             IsSuccess = true,
-            Message = "Keys updated successfully",
+            Message = "Clés mises à jour avec succès",
             Result = produit
         };
     }
+
     
     public Produit GetProduitByName(string name)
     {

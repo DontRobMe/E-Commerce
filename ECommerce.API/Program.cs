@@ -23,13 +23,12 @@ builder.Services.AddScoped<IAdminRepository, DatabaseAdminRepository>();
 builder.Services.AddScoped<IProduitRepository, DatabaseProduitRepository>();
 builder.Services.AddScoped<ISiteRepository, DatabaseSiteRepository>();
 
-// Configuration CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:4200") // Remplacez par l'URL de votre application Angular
+            builder.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -47,4 +46,5 @@ app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin"); // Ajoutez le middleware CORS ici
 app.UseAuthorization();
 app.MapControllers();
+app.UseCors("AllowSpecificOrigin");
 app.Run();
