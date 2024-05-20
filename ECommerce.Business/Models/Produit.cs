@@ -11,10 +11,10 @@ public class Produit
     public string Description { get; set; }
     public double Price { get; set; }
     public int Stock { get; set; }
-    public byte[] Image { get; set; }
+    public string Image { get; set; }
     public string Category { get; set; }
     public int Rating { get; set; }
     [NotMapped]
-    public List<string>? productcodes { get; set; }
-    
+    public List<Clients> Wishedlist { get; set; }
+
 }

@@ -25,7 +25,7 @@ namespace E_Commerce.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id:long}", Name = "GetProduitById")]
+        [HttpGet("GetProduitById/{id:long}", Name = "GetProduitById")]
         public IActionResult GetProduitById(long id)
         {
             var user = _produitService.GetProduitById(id);
@@ -46,10 +46,9 @@ namespace E_Commerce.Controllers
                 Description = user.Description,
                 Price = user.Price,
                 Stock = user.Stock,
-                Image = user.Image,
                 Category = user.Category,
                 Rating = user.Rating,
-                productcodes = user.productcodes
+                Image = user.Image
             };
             var createdUser = _produitService.CreateProduit(userD);
             if (!createdUser.IsSuccess)
