@@ -7,7 +7,6 @@ public class Clients
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
-    public int Wallet { get; set; }
     public string Password { get; set; }
     public string birth { get; set; }
     public List<Produit> WishList { get; set; }

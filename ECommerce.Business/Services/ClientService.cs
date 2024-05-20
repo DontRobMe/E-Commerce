@@ -39,14 +39,6 @@ namespace E_Commerce.Business.Services
             return BusinessResult.FromSuccess();
         }
 
-        public BusinessResult UpdateWallet(long id, int amount)
-        {
-            var user = _clientRepository.GetClientById(id);
-            user.Wallet += amount;
-            _clientRepository.UpdateClient(id, user);
-            return BusinessResult.FromSuccess();
-        }
-
         public BusinessResult UpdatePassword(long id, string password)
         {
             var user = _clientRepository.GetClientById(id);

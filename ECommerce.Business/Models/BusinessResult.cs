@@ -61,6 +61,11 @@
         {
             return new BusinessResult(true, null);
         }
+
+        public static BusinessResult FromSuccess(BusinessResult<string> userWishList)
+        {
+            return new BusinessResult(true, null);
+        }
     }
 
     public class BusinessResult<T> : BusinessResult // Hérite du résultat sans retour

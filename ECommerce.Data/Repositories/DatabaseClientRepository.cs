@@ -1,6 +1,11 @@
 ﻿using E_Commerce.Business.IRepositories;
 using E_Commerce.Business.Models;
 using E_Commerce.Data.Context;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
 
 namespace E_Commerce.Data.Repositories;
 
@@ -56,27 +61,6 @@ public class DatabaseClientRepository : IClientRepository
         };
     }
     
-    public BusinessResult<Clients> UpdateWallet(long userId, int updatedWallet)
-    {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
-        if (user == null)
-        {
-            return new BusinessResult<Clients>
-            {
-                IsSuccess = false,
-                Message = "User not found"
-            };
-        }
-        user.Wallet = updatedWallet;
-        _dbContext.SaveChanges();
-        return new BusinessResult<Clients>
-        {
-            IsSuccess = true,
-            Message = "Wallet updated successfully",
-            Result = user
-        };
-    }
-    
     public BusinessResult<Clients> UpdatePassword(long userId, string updatedPassword)
     {
         var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
@@ -98,43 +82,87 @@ public class DatabaseClientRepository : IClientRepository
         };
     }
     
-    public BusinessResult<Clients> Login(string email, string password)
+    public BusinessResult<string> Login(string email, string password)
     {
         var user = _dbContext.Client?.FirstOrDefault(u => u.Email == email && u.Password == password);
         if (user == null)
         {
-            return new BusinessResult<Clients>
+            return new BusinessResult<string>
             {
                 IsSuccess = false,
-                Message = "User not found"
+                Message = "Email ou mot de passe incorrect.",
+                Result = null
             };
         }
-        return new BusinessResult<Clients>
+
+        // Création des claims pour le token JWT
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Votre_clé_secrète"));
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(1),
+            SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = tokenHandler.WriteToken(token);
+
+        return new BusinessResult<string>
         {
             IsSuccess = true,
-            Message = "User found",
-            Result = user
+            Message = "Authentification réussie.",
+            Result = tokenString
         };
     }
     
-    public BusinessResult<Clients> Register(Clients newUser)
+    public BusinessResult<string> Register(Clients user)
     {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Email == newUser.Email);
-        if (user != null)
+        var existingUser = _dbContext.Client?.FirstOrDefault(u => u.Email == user.Email);
+        if (existingUser != null)
         {
-            return new BusinessResult<Clients>
+            return new BusinessResult<string>
             {
                 IsSuccess = false,
-                Message = "User already exists"
+                Message = "Le client existe déjà.",
+                Result = null
             };
         }
-        _dbContext.Client?.Add(newUser);
+
+        _dbContext.Client?.Add(user);
         _dbContext.SaveChanges();
-        return new BusinessResult<Clients>
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Votre_clé_secrète"));
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(1), 
+            SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = tokenHandler.WriteToken(token);
+
+        return new BusinessResult<string>
         {
             IsSuccess = true,
-            Message = "User created successfully",
-            Result = newUser
+            Message = "Inscription réussie.",
+            Result = tokenString
         };
     }
     

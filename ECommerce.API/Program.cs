@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=m;password=19911974;SslMode=none"));
+builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=root;password=19911974;SslMode=none;AllowPublicKeyRetrieval=True"));
 
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAchatsService, AchatService>();

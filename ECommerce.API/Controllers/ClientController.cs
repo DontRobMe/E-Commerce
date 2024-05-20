@@ -25,7 +25,7 @@ namespace E_Commerce.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id:long}", Name = "GetClientById")]
+        [HttpGet("getclient/{id:long}", Name = "GetClientById")]
         public IActionResult GetUserById(long id)
         {
             var user = _clientService.GetClientById(id);
@@ -37,7 +37,7 @@ namespace E_Commerce.Controllers
             return Ok(user);
         }
 
-        [HttpPut("{id:long}")]
+        [HttpPut("updateuser/{id:long}")]
         public IActionResult UpdateUser(long id, ClientDto.UpdateClientDto user)
         {
             Clients userD = new Clients()
@@ -58,7 +58,7 @@ namespace E_Commerce.Controllers
             return Ok(updatedUser);
         }
 
-        [HttpDelete("{id:long}")]
+        [HttpDelete("deleteuser/{id:long}")]
         public IActionResult DeleteUser(long id)
         {
             var result = _clientService.DeleteClient(id);
@@ -69,21 +69,8 @@ namespace E_Commerce.Controllers
 
             return NoContent();
         }
-
-
-        [HttpPut("{id:long}/wallet")]
-        public IActionResult UpdateWallet(long id, ClientDto.WalletClientDto wallet)
-        {
-            var updatedWallet = _clientService.UpdateWallet(id, wallet.Wallet);
-            if (updatedWallet == null)
-            {
-                return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour du portefeuille.");
-            }
-
-            return Ok(updatedWallet);
-        }
-
-        [HttpPut("{id:long}/password")]
+        
+        [HttpPut("password/{id:long}")]
         public IActionResult UpdatePassword(long id, ClientDto.PasswordClientDto password)
         {
             var updatedPassword = _clientService.UpdatePassword(id, password.Password);
@@ -127,7 +114,7 @@ namespace E_Commerce.Controllers
             return Ok(createdUser);
         }
 
-        [HttpPut("{id:long}/wishlist")]
+        [HttpPut("addwishlist/{id:long}")]
         public IActionResult AddToWishlist(long id, ClientDto.WishlistClientDto wishlist)
         {
             var updatedWishlist = _clientService.AddToWishlist(id, wishlist.WishList);
@@ -139,7 +126,7 @@ namespace E_Commerce.Controllers
             return Ok(updatedWishlist);
         }
 
-        [HttpGet("{id:long}/wishlists")]
+        [HttpGet("getwishlist/{id:long}")]
         public IActionResult GetWishlist(long id)
         {
             var wishlist = _clientService.GetWishlist(id);

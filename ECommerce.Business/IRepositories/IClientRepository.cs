@@ -12,12 +12,9 @@ public interface IClientRepository
         
     BusinessResult<Clients> UpdateClient(long userId, Clients updatedUser);
     
-    BusinessResult<Clients> Login(string email, string password);
+    BusinessResult<string> Login(string email, string password);
     
-    BusinessResult<Clients> Register(Clients newUser);
-    
-    BusinessResult<Clients> UpdateWallet(long userId, int updatedWallet);
-    
+    BusinessResult<string> Register(Clients newUser);
     BusinessResult<Clients> UpdatePassword(long userId, string newPassword);
     
     BusinessResult<Clients> AddToWishlist(long userId, List<Produit> updatedWishList);

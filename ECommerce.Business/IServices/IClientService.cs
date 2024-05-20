@@ -12,8 +12,6 @@ public interface IClientService
 
     public BusinessResult DeleteClient(long id);
     
-    public BusinessResult UpdateWallet(long id, int amount);
-    
     public BusinessResult UpdatePassword(long id, string password);
     
     public BusinessResult Login(string email, string password);
