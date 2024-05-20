@@ -147,6 +147,7 @@ namespace E_Commerce.Controllers
             return Ok(updatedWishlist);
         }
 
+        
         [HttpGet("{id:long}/wishlists")]
         public IActionResult GetWishlist(long id)
         {
