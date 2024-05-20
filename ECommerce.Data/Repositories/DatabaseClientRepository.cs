@@ -91,11 +91,10 @@ public class DatabaseClientRepository : IClientRepository
             {
                 IsSuccess = false,
                 Message = "Email ou mot de passe incorrect.",
-                Result = null
+                Result = null!
             };
         }
 
-        // Création des claims pour le token JWT
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -114,12 +113,12 @@ public class DatabaseClientRepository : IClientRepository
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);
-
+        Console.WriteLine("tu suce?" + tokenString);
         return new BusinessResult<string>
         {
             IsSuccess = true,
             Message = "Authentification réussie.",
-            Result = tokenString
+            Token = tokenString,
         };
     }
     

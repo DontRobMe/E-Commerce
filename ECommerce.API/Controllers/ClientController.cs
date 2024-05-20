@@ -90,6 +90,7 @@ namespace E_Commerce.Controllers
             {
                 return BadRequest("Email ou mot de passe incorrect.");
             }
+            Console.WriteLine("tu suce?" + user.Token);
             return Ok(user);
         }
 

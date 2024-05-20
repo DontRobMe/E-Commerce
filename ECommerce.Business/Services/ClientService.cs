@@ -52,9 +52,10 @@ namespace E_Commerce.Business.Services
             var user = _clientRepository.Login(email, password);
             if (!user.IsSuccess)
             {
-                return BusinessResult.FromError(user.Message, user.Error);              
+                return BusinessResult.FromError(user.Message, user.Error, user.Token);              
             }
-            return BusinessResult.FromSuccess(user);
+            Console.WriteLine("tu suce?" + user.Token);
+            return BusinessResult.FromSuccess(user.Token);
         }
 
         public BusinessResult Register(Clients newUser)

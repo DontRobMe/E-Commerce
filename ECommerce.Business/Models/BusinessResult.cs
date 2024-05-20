@@ -1,9 +1,10 @@
-﻿namespace E_Commerce.Business.Models
+namespace E_Commerce.Business.Models
 {
     public class BusinessResult
     {
         public bool IsSuccess { get; set; }
         public BusinessError? Error { get; set; }
+        public string Token { get; set; }
 
         protected BusinessResult(bool isSuccess, BusinessError? error)
         {
@@ -11,7 +12,14 @@
             Error = error;
         }
 
-        public static BusinessResult FromError(string errorMessage, BusinessErrorReason reason)
+        private BusinessResult(bool isSuccess, BusinessError? error, string userWishList)
+        {
+            IsSuccess = isSuccess;
+            Error = error;
+            Token = userWishList;
+        }
+
+        public static BusinessResult FromError(string errorMessage, BusinessError? reason)
         {
             BusinessError error = new(errorMessage, reason);
             return new BusinessResult(false, error);
@@ -47,7 +55,8 @@
             return new BusinessResult(true, null);
         }
 
-        public static BusinessResult FromError(string registrationResultMessage, BusinessError? registrationResultError)
+        public static BusinessResult FromError(string registrationResultMessage, BusinessError? registrationResultError,
+            string userToken)
         {
             return new BusinessResult(false, registrationResultError);
         }
@@ -66,11 +75,17 @@
         {
             return new BusinessResult(true, null);
         }
+
+        public static BusinessResult FromSuccess(string userWishList)
+        {
+            return new BusinessResult(true, null, userWishList);
+        }
     }
 
     public class BusinessResult<T> : BusinessResult // Hérite du résultat sans retour
     {
-        public T? Result { get; set; }
+        public T Result { get; set; }
+        public string Token { get; set; }
         public string Message { get; set; }
 
         public BusinessResult(bool isSuccess, BusinessError? error, T? result = default) : base(isSuccess, error)
@@ -82,15 +97,15 @@
         {
             IsSuccess = false;
             Message = string.Empty;
-            
+            Token = string.Empty;
         }
 
-        public static BusinessResult<T> FromSuccess(T? result)
+        public static BusinessResult<T> FromSuccess(T result)
         {
             return new BusinessResult<T>(true, null, result);
         }
 
-        public static BusinessResult<T> FromError(string errorMessage, BusinessErrorReason reason, T? result = default)
+        public static BusinessResult<T> FromError(string errorMessage, BusinessError? reason, T? result = default)
         {
             BusinessError error = new(errorMessage, reason);
             return new BusinessResult<T>(false, error, result);
@@ -121,7 +136,7 @@
             return new BusinessResult<Produit>(true, null, businessResult);
         }
 
-        public static BusinessResult<T> FromError(string leProjetNExistePas)
+        public static BusinessResult<T> FromError(string leProjetNExistePas, BusinessErrorReason registrationResultError)
         {
             return BusinessResult<T>.FromError(leProjetNExistePas, BusinessErrorReason.NotFound);
         }
@@ -144,9 +159,9 @@
         public string ErrorMessage { get; set; }
 
         // Cause de l'erreur, utile pour déterminer le statut http
-        public BusinessErrorReason Reason { get; set; }
+        public BusinessError? Reason { get; set; }
 
-        public BusinessError(string errorMessage, BusinessErrorReason reason)
+        public BusinessError(string errorMessage, BusinessError? reason)
         {
             ErrorMessage = errorMessage;
             Reason = reason;
@@ -158,6 +173,7 @@
     public enum BusinessErrorReason
     {
         BusinessRule = 400,
-        NotFound = 404,
+        NotFound = 404, 
+        InvalidCredentials,
     }
 }
