@@ -113,7 +113,6 @@ public class DatabaseClientRepository : IClientRepository
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);
-        Console.WriteLine("tu suce?" + tokenString);
         return new BusinessResult<string>
         {
             IsSuccess = true,

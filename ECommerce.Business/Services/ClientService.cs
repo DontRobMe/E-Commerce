@@ -52,9 +52,8 @@ namespace E_Commerce.Business.Services
             var user = _clientRepository.Login(email, password);
             if (!user.IsSuccess)
             {
-                return BusinessResult.FromError(user.Message, user.Error, user.Token);              
+                return BusinessResult.FromError(user.Message, user.Error);              
             }
-            Console.WriteLine("tu suce?" + user.Token);
             return BusinessResult.FromSuccess(user.Token);
         }
 
@@ -66,7 +65,7 @@ namespace E_Commerce.Business.Services
             {
                 return BusinessResult.FromError(registrationResult.Message, registrationResult.Error);
             }
-            return BusinessResult.FromSuccess();
+            return BusinessResult.FromSuccess(registrationResult.Token);
         }
         
         public BusinessResult AddToWishlist(long userId, List<Produit> updatedWishList)
