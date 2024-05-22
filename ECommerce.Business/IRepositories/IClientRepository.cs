@@ -1,4 +1,5 @@
-﻿using E_Commerce.Business.Models;
+﻿using E_Commerce.Business.DTO;
+using E_Commerce.Business.Models;
 
 namespace E_Commerce.Business.IRepositories;
 
@@ -16,8 +17,10 @@ public interface IClientRepository
     
     BusinessResult<string> Register(Clients newUser);
     BusinessResult<Clients> UpdatePassword(long userId, string newPassword);
+
+    public BusinessResult AddToWishlist(int userId, WishlistItem wishlistItem);
     
-    BusinessResult<Clients> AddToWishlist(long userId, List<Produit> updatedWishList);
+    BusinessResult<List<ProduitDto.WishlistProductDto>> GetWishlist(long userId);
     
-    BusinessResult<Clients> GetWishlist(long userId);
+    public BusinessResult RemoveFromWishlist(int userId, int productId);
 }

@@ -5,6 +5,7 @@ namespace E_Commerce.Business.Models
         public bool IsSuccess { get; set; }
         public BusinessError? Error { get; set; }
         public string Token { get; set; }
+        public string Message { get; set; }
 
         protected BusinessResult(bool isSuccess, BusinessError? error)
         {
@@ -19,17 +20,17 @@ namespace E_Commerce.Business.Models
             Token = userWishList;
         }
 
-        public static BusinessResult FromError(string errorMessage, BusinessError? reason)
+        public static BusinessResult<Clients> FromError(string errorMessage, BusinessError? reason)
         {
             BusinessError error = new(errorMessage, reason);
-            return new BusinessResult(false, error);
+            return new BusinessResult<Clients>(false, error);
         }
 
         public static BusinessResult FromSuccess(BusinessResult<Achats> businessResult)
         {
             return new BusinessResult(true, null);
         }
-        
+
         public static BusinessResult FromSuccess(BusinessResult<Admin> businessResult)
         {
             return new BusinessResult(true, null);
@@ -79,6 +80,11 @@ namespace E_Commerce.Business.Models
         public static BusinessResult FromSuccess(string userWishList)
         {
             return new BusinessResult(true, null, userWishList);
+        }
+
+        public static BusinessResult<Clients> FromSuccess(Clients userWishList)
+        {
+            return new BusinessResult<Clients>(true, null, userWishList);
         }
     }
 

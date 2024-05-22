@@ -43,7 +43,12 @@ public class ClientDto
     
     public class WishlistClientDto
     {
-        public List<Produit> WishList { get; set; }
+        public int WishList { get; set; }
+    }
+    
+    public class WishlistItemDto
+    {
+        public long ProduitId { get; set; }
     }
     
 }

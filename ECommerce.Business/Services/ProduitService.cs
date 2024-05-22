@@ -15,7 +15,7 @@ public class ProduitService : IProduitService
     public BusinessResult<IEnumerable<Produit>> GetProduits()
     {
         var produits = _produitRepository.GetProduits();
-        return BusinessResult<IEnumerable<Produit>>.FromSuccess(produits);
+        return BusinessResult<IEnumerable<Produit>>.FromSuccess(produits!);
     }
 
     public BusinessResult<Produit> GetProduitById(long id)

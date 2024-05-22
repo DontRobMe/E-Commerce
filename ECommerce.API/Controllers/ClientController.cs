@@ -46,7 +46,7 @@ namespace E_Commerce.Controllers
                 LastName = user.LastName,
                 Email = user.Email,
                 Address = user.Address,
-                birth = user.birth
+                Birth = user.birth
             };
 
             var updatedUser = _clientService.UpdateClient(id, userD);
@@ -103,39 +103,51 @@ namespace E_Commerce.Controllers
                 Email = user.Email,
                 Address = user.Address,
                 Password = user.Password,
-                birth = user.birth
+                Birth = user.birth
             };
             var createdUser = _clientService.Register(userD);
             if (!createdUser.IsSuccess)
             {
                 return BadRequest("le client existe deja");
             }
-
             return Ok(createdUser);
         }
 
-        [HttpPut("addwishlist/{id:long}")]
-        public IActionResult AddToWishlist(long id, ClientDto.WishlistClientDto wishlist)
+        [HttpPost("addwishlist/{userId:long}")]
+        public IActionResult AddToWishlist(int userId, [FromQuery(Name = "gameId")] int gameId)
         {
-            var updatedWishlist = _clientService.AddToWishlist(id, wishlist.WishList);
-            if (updatedWishlist.IsSuccess == false)
+            var result = _clientService.AddToWishlist(userId, gameId);
+            if (!result.IsSuccess)
             {
-                return NotFound($"Utilisateur avec l'ID {id} introuvable pour la mise à jour de la liste de souhaits.");
+                return BadRequest(result.Error);
             }
 
-            return Ok(updatedWishlist);
+            return Ok(result);
         }
+
 
         [HttpGet("getwishlist/{id:long}")]
         public IActionResult GetWishlist(long id)
         {
-            var wishlist = _clientService.GetWishlist(id);
-            if (wishlist.IsSuccess == false)
+            var result = _clientService.GetWishlist(id);
+            if (!result.IsSuccess)
             {
-                return NotFound($"Utilisateur avec l'ID {id} introuvable pour la liste de souhaits.");
+                return NotFound(result.Message);
             }
 
-            return Ok(wishlist);
+            return Ok(result.Result);
+        }
+        
+        [HttpDelete("removewishlist/{userId:long}")]
+        public IActionResult RemoveFromWishlist(int userId, [FromQuery(Name = "gameId")] int gameId)
+        {
+            var result = _clientService.RemoveFromWishlist(userId, gameId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(result);
         }
     }
 }

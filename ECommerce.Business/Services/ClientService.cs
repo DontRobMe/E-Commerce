@@ -8,10 +8,12 @@ namespace E_Commerce.Business.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly IProduitRepository _produitRepository;
 
-        public ClientService(IClientRepository clientRepository)
+        public ClientService(IClientRepository clientRepository, IProduitRepository produitRepository)
         {
             _clientRepository = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
+            _produitRepository = produitRepository ?? throw new ArgumentNullException(nameof(produitRepository));
         }
 
         public BusinessResult<IEnumerable<Clients>> GetClients()
@@ -52,38 +54,75 @@ namespace E_Commerce.Business.Services
             var user = _clientRepository.Login(email, password);
             if (!user.IsSuccess)
             {
-                return BusinessResult.FromError(user.Message, user.Error);              
+                return BusinessResult.FromError(user.Message, user.Error);
             }
+
             return BusinessResult.FromSuccess(user.Token);
         }
 
         public BusinessResult Register(Clients newUser)
         {
             var registrationResult = _clientRepository.Register(newUser);
-    
+
             if (!registrationResult.IsSuccess)
             {
                 return BusinessResult.FromError(registrationResult.Message, registrationResult.Error);
             }
+
             return BusinessResult.FromSuccess(registrationResult.Token);
         }
-        
-        public BusinessResult AddToWishlist(long userId, List<Produit> updatedWishList)
+
+        public BusinessResult AddToWishlist(int userId, int productId)
         {
             var user = _clientRepository.GetClientById(userId);
-            user.WishList = updatedWishList;
-            var wishlist = _clientRepository.AddToWishlist(user.Id, user.WishList);
-            if(wishlist.IsSuccess == false)
+            if (user == null)
             {
-                return BusinessResult.FromError(wishlist.Message, wishlist.Error);
+                return BusinessResult.FromError("User not found");
             }
+
+            var produit = _produitRepository.GetProduitById(productId);
+            if (produit == null)
+            {
+                return BusinessResult.FromError($"Product with ID {productId} not found");
+            }
+
+            var wishlistItem = new WishlistItem
+            {
+                ClientId = userId,
+                ProduitId = produit.Id,
+                Produit = produit
+            };
+
+            var result = _clientRepository.AddToWishlist(userId, wishlistItem);
+            if (!result.IsSuccess)
+            {
+                return BusinessResult.FromError(result.Message, result.Error);
+            }
+
             return BusinessResult.FromSuccess();
         }
 
-        public BusinessResult<Clients> GetWishlist(long id)
+
+        public BusinessResult<List<ProduitDto.WishlistProductDto>> GetWishlist(long userId)
         {
-            var user = _clientRepository.GetWishlist(id);
-            return BusinessResult.FromSuccess(user);
+            var result = _clientRepository.GetWishlist(userId);
+            if (!result.IsSuccess)
+            {
+                return BusinessResult<List<ProduitDto.WishlistProductDto>>.FromError(result.Message, result.Error);
+            }
+
+            return BusinessResult<List<ProduitDto.WishlistProductDto>>.FromSuccess(result.Result);
+        }
+        
+        public BusinessResult RemoveFromWishlist(int userId, int productId)
+        {
+            var result = _clientRepository.RemoveFromWishlist(userId, productId);
+            if (!result.IsSuccess)
+            {
+                return BusinessResult.FromError(result.Message, result.Error);
+            }
+
+            return BusinessResult.FromSuccess();
         }
     }
 }

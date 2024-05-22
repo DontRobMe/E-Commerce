@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using E_Commerce.Business.DTO;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace E_Commerce.Data.Repositories;
@@ -47,11 +49,12 @@ public class DatabaseClientRepository : IClientRepository
                 Message = "User not found"
             };
         }
+
         user.Name = updatedUser.Name;
         user.LastName = updatedUser.LastName;
         user.Email = updatedUser.Email;
         user.Address = updatedUser.Address;
-        user.birth = updatedUser.birth;
+        user.Birth = updatedUser.Birth;
         _dbContext.SaveChanges();
         return new BusinessResult<Clients>
         {
@@ -60,7 +63,7 @@ public class DatabaseClientRepository : IClientRepository
             Result = user
         };
     }
-    
+
     public BusinessResult<Clients> UpdatePassword(long userId, string updatedPassword)
     {
         var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
@@ -72,6 +75,7 @@ public class DatabaseClientRepository : IClientRepository
                 Message = "User not found"
             };
         }
+
         user.Password = updatedPassword;
         _dbContext.SaveChanges();
         return new BusinessResult<Clients>
@@ -81,7 +85,7 @@ public class DatabaseClientRepository : IClientRepository
             Result = user
         };
     }
-    
+
     public BusinessResult<string> Login(string email, string password)
     {
         var user = _dbContext.Client?.FirstOrDefault(u => u.Email == email && u.Password == password);
@@ -120,7 +124,7 @@ public class DatabaseClientRepository : IClientRepository
             Token = tokenString,
         };
     }
-    
+
     public BusinessResult<string> Register(Clients user)
     {
         var existingUser = _dbContext.Client?.FirstOrDefault(u => u.Email == user.Email);
@@ -130,7 +134,7 @@ public class DatabaseClientRepository : IClientRepository
             {
                 IsSuccess = false,
                 Message = "Le client existe déjà.",
-                Result = null
+                Result = null!
             };
         }
 
@@ -148,59 +152,132 @@ public class DatabaseClientRepository : IClientRepository
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(1), 
+            Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenString = tokenHandler.WriteToken(token);
-
         return new BusinessResult<string>
         {
             IsSuccess = true,
             Message = "Inscription réussie.",
-            Result = tokenString
+            Token = tokenString,
         };
     }
-    
-    public BusinessResult<Clients> AddToWishlist(long userId, List<Produit> updatedWishList)
+
+    public BusinessResult AddToWishlist(int userId, WishlistItem wishlistItem)
     {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
+        using (var transaction = _dbContext.Database.BeginTransaction())
+        {
+            try
+            {
+                var user = _dbContext.Client
+                    .Include(u => u.Wishlist)
+                    .ThenInclude(w => w.Produit)
+                    .FirstOrDefault(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return BusinessResult.FromError("User not found");
+                }
+
+                var existingProduct = _dbContext.Produit.Find(wishlistItem.ProduitId);
+                if (existingProduct == null)
+                {
+                    return BusinessResult.FromError($"Product with ID {wishlistItem.ProduitId} not found");
+                }
+                
+                user.Wishlist.Add(new WishlistItem
+                {
+                    ClientId = user.Id,
+                    ProduitId = existingProduct.Id,
+                    Produit = existingProduct
+                });
+
+                _dbContext.SaveChanges();
+                transaction.Commit();
+
+                return BusinessResult.FromSuccess($"Wishlist updated successfully {user}");
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return BusinessResult.FromError( $"An error occurred: {ex.Message}");
+            }
+        }
+    }
+
+
+
+
+    public BusinessResult<List<ProduitDto.WishlistProductDto>> GetWishlist(long userId)
+    {
+        var user = _dbContext.Client
+            ?.Include(u => u.Wishlist)
+            .ThenInclude(w => w.Produit)
+            .FirstOrDefault(u => u.Id == userId);
+
         if (user == null)
         {
-            return new BusinessResult<Clients>
+            return new BusinessResult<List<ProduitDto.WishlistProductDto>>
             {
                 IsSuccess = false,
                 Message = "User not found"
             };
         }
-        user.WishList = updatedWishList;
-        _dbContext.SaveChanges();
-        return new BusinessResult<Clients>
+
+        var wishlistProducts = user.Wishlist.Select(w => new ProduitDto.WishlistProductDto
         {
-            IsSuccess = true,
-            Message = "Wishlist updated successfully",
-            Result = user
-        };
-    }
-    
-    public BusinessResult<Clients> GetWishlist(long userId)
-    {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
-        if (user == null)
-        {
-            return new BusinessResult<Clients>
-            {
-                IsSuccess = false,
-                Message = "User not found"
-            };
-        }
-        return new BusinessResult<Clients>
+            ProduitId = w.Produit.Id,
+            ProduitName = w.Produit.Name,
+            ProduitImage = w.Produit.Image,
+            ProduitPrice = w.Produit.Price
+        }).ToList();
+
+        return new BusinessResult<List<ProduitDto.WishlistProductDto>>
         {
             IsSuccess = true,
             Message = "Wishlist found",
-            Result = user
+            Result = wishlistProducts
         };
     }
+
+    public BusinessResult RemoveFromWishlist(int userId, int productId)
+    {
+        using (var transaction = _dbContext.Database.BeginTransaction())
+        {
+            try
+            {
+                var user = _dbContext.Client
+                    .Include(u => u.Wishlist)
+                    .FirstOrDefault(u => u.Id == userId);
+
+                if (user == null)
+                {
+                    return BusinessResult.FromError("User not found");
+                }
+
+                var wishlistItem = user.Wishlist.FirstOrDefault(w => w.ProduitId == productId);
+                if (wishlistItem == null)
+                {
+                    return BusinessResult.FromError($"Product with ID {productId} not found in wishlist");
+                }
+
+                user.Wishlist.Remove(wishlistItem);
+                _dbContext.SaveChanges();
+                transaction.Commit();
+
+                return BusinessResult.FromSuccess("Product removed from wishlist");
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return BusinessResult.FromError($"An error occurred: {ex.Message}");
+            }
+        }
+    }
+
+
 }

@@ -8,7 +8,7 @@ public class ProduitDto
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public int Stock { get; set; }
         public string Category { get; set; } 
         public int Rating { get; set; }
@@ -30,4 +30,13 @@ public class ProduitDto
     {
         public string Image { get; set; }
     }
+    
+    public class WishlistProductDto
+    {
+        public int ProduitId { get; set; }
+        public string ProduitName { get; set; }
+        public decimal ProduitPrice { get; set; }
+        public string ProduitImage { get; set; }
+    }
+
 }

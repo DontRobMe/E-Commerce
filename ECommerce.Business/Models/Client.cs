@@ -8,6 +8,7 @@ public class Clients
     public string Email { get; set; }
     public string Address { get; set; }
     public string Password { get; set; }
-    public string birth { get; set; }
-    public List<Produit> WishList { get; set; }
+    public string Birth { get; set; }
+
+    public List<WishlistItem> Wishlist { get; set; }
 }

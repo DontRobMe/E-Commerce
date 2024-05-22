@@ -7,7 +7,13 @@ using E_Commerce.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Configuration des services
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MyDbContext>(options => options.UseMySQL("server=localhost;database=instantgaming;user=root;password=19911974;SslMode=none;AllowPublicKeyRetrieval=True"));
@@ -36,6 +42,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Configuration du pipeline de requête
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -43,7 +50,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigin"); // Ajoutez le middleware CORS ici
+app.UseCors("AllowSpecificOrigin");
 app.UseAuthorization();
 app.MapControllers();
 app.UseCors("AllowSpecificOrigin");
