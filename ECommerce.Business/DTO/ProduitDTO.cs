@@ -15,23 +15,15 @@ public class ProduitDto
         public string Image { get; set; }
     }
     
-    public class UpdateProduitDto
-    {
-        public string Name { get; set; }
-
-    }
-    
-    public class UpdateRatingDto
-    {
-        public int Rating { get; set; }
-    }
-    
-    public class UpdateImageDto
-    {
-        public string Image { get; set; }
-    }
-    
     public class WishlistProductDto
+    {
+        public int ProduitId { get; set; }
+        public string ProduitName { get; set; }
+        public decimal ProduitPrice { get; set; }
+        public string ProduitImage { get; set; }
+    }
+    
+    public class CartProductDto
     {
         public int ProduitId { get; set; }
         public string ProduitName { get; set; }

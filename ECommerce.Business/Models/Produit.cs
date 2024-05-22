@@ -15,6 +15,7 @@ public class Produit
     public string Category { get; set; }
     public int Rating { get; set; }
 
-    // Liste de souhaits associée à ce produit
     public List<WishlistItem> WishlistItems { get; set; }
+    public List<CartItem> CartItems { get; set; }
+
 }

@@ -11,4 +11,6 @@ public class Clients
     public string Birth { get; set; }
 
     public List<WishlistItem> Wishlist { get; set; }
+    public List<CartItem> CartItems { get; set; }
+
 }

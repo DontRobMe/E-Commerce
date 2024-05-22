@@ -22,25 +22,25 @@ public class DatabaseClientRepository : IClientRepository
 
     public void DeleteClient(long userId)
     {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
+        var user = _dbContext.Client.FirstOrDefault(u => u.Id == userId);
         if (user == null) return;
-        _dbContext.Client?.Remove(user);
+        _dbContext.Client.Remove(user);
         _dbContext.SaveChanges();
     }
 
-    public IEnumerable<Clients>? GetClients()
+    public IEnumerable<Clients> GetClients()
     {
         return _dbContext.Client;
     }
 
     public Clients GetClientById(long? userId)
     {
-        return _dbContext.Client?.FirstOrDefault(u => u.Id == userId)!;
+        return _dbContext.Client.FirstOrDefault(u => u.Id == userId)!;
     }
 
     public BusinessResult<Clients> UpdateClient(long userId, Clients updatedUser)
     {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
+        var user = _dbContext.Client.FirstOrDefault(u => u.Id == userId);
         if (user == null)
         {
             return new BusinessResult<Clients>
@@ -66,7 +66,7 @@ public class DatabaseClientRepository : IClientRepository
 
     public BusinessResult<Clients> UpdatePassword(long userId, string updatedPassword)
     {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Id == userId);
+        var user = _dbContext.Client.FirstOrDefault(u => u.Id == userId);
         if (user == null)
         {
             return new BusinessResult<Clients>
@@ -88,7 +88,7 @@ public class DatabaseClientRepository : IClientRepository
 
     public BusinessResult<string> Login(string email, string password)
     {
-        var user = _dbContext.Client?.FirstOrDefault(u => u.Email == email && u.Password == password);
+        var user = _dbContext.Client.FirstOrDefault(u => u.Email == email && u.Password == password);
         if (user == null)
         {
             return new BusinessResult<string>
@@ -127,7 +127,7 @@ public class DatabaseClientRepository : IClientRepository
 
     public BusinessResult<string> Register(Clients user)
     {
-        var existingUser = _dbContext.Client?.FirstOrDefault(u => u.Email == user.Email);
+        var existingUser = _dbContext.Client.FirstOrDefault(u => u.Email == user.Email);
         if (existingUser != null)
         {
             return new BusinessResult<string>
@@ -138,7 +138,7 @@ public class DatabaseClientRepository : IClientRepository
             };
         }
 
-        _dbContext.Client?.Add(user);
+        _dbContext.Client.Add(user);
         _dbContext.SaveChanges();
 
         var claims = new[]
@@ -169,43 +169,41 @@ public class DatabaseClientRepository : IClientRepository
 
     public BusinessResult AddToWishlist(int userId, WishlistItem wishlistItem)
     {
-        using (var transaction = _dbContext.Database.BeginTransaction())
+        using var transaction = _dbContext.Database.BeginTransaction();
+        try
         {
-            try
+            var user = _dbContext.Client
+                .Include(u => u.Wishlist)
+                .ThenInclude(w => w.Produit)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
             {
-                var user = _dbContext.Client
-                    .Include(u => u.Wishlist)
-                    .ThenInclude(w => w.Produit)
-                    .FirstOrDefault(u => u.Id == userId);
+                return BusinessResult.FromError("User not found");
+            }
 
-                if (user == null)
-                {
-                    return BusinessResult.FromError("User not found");
-                }
-
-                var existingProduct = _dbContext.Produit.Find(wishlistItem.ProduitId);
-                if (existingProduct == null)
-                {
-                    return BusinessResult.FromError($"Product with ID {wishlistItem.ProduitId} not found");
-                }
+            var existingProduct = _dbContext.Produit.Find(wishlistItem.ProduitId);
+            if (existingProduct == null)
+            {
+                return BusinessResult.FromError($"Product with ID {wishlistItem.ProduitId} not found");
+            }
                 
-                user.Wishlist.Add(new WishlistItem
-                {
-                    ClientId = user.Id,
-                    ProduitId = existingProduct.Id,
-                    Produit = existingProduct
-                });
-
-                _dbContext.SaveChanges();
-                transaction.Commit();
-
-                return BusinessResult.FromSuccess($"Wishlist updated successfully {user}");
-            }
-            catch (Exception ex)
+            user.Wishlist.Add(new WishlistItem
             {
-                transaction.Rollback();
-                return BusinessResult.FromError( $"An error occurred: {ex.Message}");
-            }
+                ClientId = user.Id,
+                ProduitId = existingProduct.Id,
+                Produit = existingProduct
+            });
+
+            _dbContext.SaveChanges();
+            transaction.Commit();
+
+            return BusinessResult.FromSuccess($"Wishlist updated successfully {user}");
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            return BusinessResult.FromError( $"An error occurred: {ex.Message}");
         }
     }
 
@@ -215,7 +213,7 @@ public class DatabaseClientRepository : IClientRepository
     public BusinessResult<List<ProduitDto.WishlistProductDto>> GetWishlist(long userId)
     {
         var user = _dbContext.Client
-            ?.Include(u => u.Wishlist)
+            .Include(u => u.Wishlist)
             .ThenInclude(w => w.Produit)
             .FirstOrDefault(u => u.Id == userId);
 
@@ -246,38 +244,144 @@ public class DatabaseClientRepository : IClientRepository
 
     public BusinessResult RemoveFromWishlist(int userId, int productId)
     {
-        using (var transaction = _dbContext.Database.BeginTransaction())
+        using var transaction = _dbContext.Database.BeginTransaction();
+        try
         {
-            try
+            var user = _dbContext.Client
+                .Include(u => u.Wishlist)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
             {
-                var user = _dbContext.Client
-                    .Include(u => u.Wishlist)
-                    .FirstOrDefault(u => u.Id == userId);
-
-                if (user == null)
-                {
-                    return BusinessResult.FromError("User not found");
-                }
-
-                var wishlistItem = user.Wishlist.FirstOrDefault(w => w.ProduitId == productId);
-                if (wishlistItem == null)
-                {
-                    return BusinessResult.FromError($"Product with ID {productId} not found in wishlist");
-                }
-
-                user.Wishlist.Remove(wishlistItem);
-                _dbContext.SaveChanges();
-                transaction.Commit();
-
-                return BusinessResult.FromSuccess("Product removed from wishlist");
+                return BusinessResult.FromError("User not found");
             }
-            catch (Exception ex)
+
+            var wishlistItem = user.Wishlist.FirstOrDefault(w => w.ProduitId == productId);
+            if (wishlistItem == null)
             {
-                transaction.Rollback();
-                return BusinessResult.FromError($"An error occurred: {ex.Message}");
+                return BusinessResult.FromError($"Product with ID {productId} not found in wishlist");
             }
+
+            user.Wishlist.Remove(wishlistItem);
+            _dbContext.SaveChanges();
+            transaction.Commit();
+
+            return BusinessResult.FromSuccess("Product removed from wishlist");
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            return BusinessResult.FromError($"An error occurred: {ex.Message}");
+        }
+    }
+    
+    
+    public BusinessResult AddToCart(int userId, CartItem cartItems)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+        try
+        {
+            var user = _dbContext.Client
+                .Include(u => u.CartItems)
+                .ThenInclude(w => w.Produit)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return BusinessResult.FromError("User not found");
+            }
+
+            var existingProduct = _dbContext.Produit.Find(cartItems.ProduitId);
+            if (existingProduct == null)
+            {
+                return BusinessResult.FromError($"Product with ID {cartItems.ProduitId} not found");
+            }
+                
+            user.CartItems.Add(new CartItem
+            {
+                ClientId = user.Id,
+                ProduitId = existingProduct.Id,
+                Produit = existingProduct
+            });
+
+            _dbContext.SaveChanges();
+            transaction.Commit();
+
+            return BusinessResult.FromSuccess($"Wishlist updated successfully {user}");
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            return BusinessResult.FromError( $"An error occurred: {ex.Message}");
         }
     }
 
+
+
+
+    public BusinessResult<List<ProduitDto.CartProductDto>> GetCart(long userId)
+    {
+        var user = _dbContext.Client
+            .Include(u => u.CartItems)
+            .ThenInclude(w => w.Produit)
+            .FirstOrDefault(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return new BusinessResult<List<ProduitDto.CartProductDto>>
+            {
+                IsSuccess = false,
+                Message = "User not found"
+            };
+        }
+
+        var cartProducts = user.CartItems.Select(w => new ProduitDto.CartProductDto
+        {
+            ProduitId = w.Produit.Id,
+            ProduitName = w.Produit.Name,
+            ProduitImage = w.Produit.Image,
+            ProduitPrice = w.Produit.Price
+        }).ToList();
+
+        return new BusinessResult<List<ProduitDto.CartProductDto>>
+        {
+            IsSuccess = true,
+            Message = "Wishlist found",
+            Result = cartProducts
+        };
+    }
+
+    public BusinessResult RemoveFromCart(int userId, int productId)
+    {
+        using var transaction = _dbContext.Database.BeginTransaction();
+        try
+        {
+            var user = _dbContext.Client
+                .Include(u => u.CartItems)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return BusinessResult.FromError("User not found");
+            }
+
+            var cartItem = user.CartItems.FirstOrDefault(w => w.ProduitId == productId);
+            if (cartItem == null)
+            {
+                return BusinessResult.FromError($"Product with ID {productId} not found in wishlist");
+            }
+
+            user.CartItems.Remove(cartItem);
+            _dbContext.SaveChanges();
+            transaction.Commit();
+
+            return BusinessResult.FromSuccess("Product removed from wishlist");
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            return BusinessResult.FromError($"An error occurred: {ex.Message}");
+        }
+    }
 
 }

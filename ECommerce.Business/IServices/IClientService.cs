@@ -23,4 +23,10 @@ public interface IClientService
     
     public BusinessResult<List<ProduitDto.WishlistProductDto>> GetWishlist(long id);
     public BusinessResult RemoveFromWishlist(int userId, int productId);
+    public BusinessResult AddToCart(int userId, int productId);
+
+    public BusinessResult<List<ProduitDto.CartProductDto>> GetCart(long userId);
+
+    public BusinessResult RemoveFromCart(int userId, int productId);
+
 }

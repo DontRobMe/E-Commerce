@@ -41,14 +41,4 @@ public class ClientDto
         public string birth { get; set; }
     }
     
-    public class WishlistClientDto
-    {
-        public int WishList { get; set; }
-    }
-    
-    public class WishlistItemDto
-    {
-        public long ProduitId { get; set; }
-    }
-    
 }

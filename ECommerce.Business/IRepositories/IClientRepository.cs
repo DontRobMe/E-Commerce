@@ -23,4 +23,10 @@ public interface IClientRepository
     BusinessResult<List<ProduitDto.WishlistProductDto>> GetWishlist(long userId);
     
     public BusinessResult RemoveFromWishlist(int userId, int productId);
+    public BusinessResult AddToCart(int userId, CartItem cartItems);
+
+    public BusinessResult<List<ProduitDto.CartProductDto>> GetCart(long userId);
+
+    public BusinessResult RemoveFromCart(int userId, int productId);
+
 }

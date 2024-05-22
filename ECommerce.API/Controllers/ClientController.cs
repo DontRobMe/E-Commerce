@@ -149,5 +149,43 @@ namespace E_Commerce.Controllers
 
             return Ok(result);
         }
+        
+        
+        [HttpPost("addcart/{userId:long}")]
+        public IActionResult AddToCart(int userId, [FromQuery(Name = "gameId")] int gameId)
+        {
+            var result = _clientService.AddToCart(userId, gameId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("getcart/{id:long}")]
+        public IActionResult GetCart(long id)
+        {
+            var result = _clientService.GetCart(id);
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Message);
+            }
+
+            return Ok(result.Result);
+        }
+        
+        [HttpDelete("removecart/{userId:long}")]
+        public IActionResult RemoveFromCart(int userId, [FromQuery(Name = "gameId")] int gameId)
+        {
+            var result = _clientService.RemoveFromCart(userId, gameId);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(result);
+        }
     }
 }

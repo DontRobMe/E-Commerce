@@ -51,11 +51,6 @@ namespace E_Commerce.Business.Models
             return new BusinessResult(true, null);
         }
 
-        public static BusinessResult FromSuccess()
-        {
-            return new BusinessResult(true, null);
-        }
-
         public static BusinessResult FromError(string registrationResultMessage, BusinessError? registrationResultError,
             string userToken)
         {
@@ -85,6 +80,11 @@ namespace E_Commerce.Business.Models
         public static BusinessResult<Clients> FromSuccess(Clients userWishList)
         {
             return new BusinessResult<Clients>(true, null, userWishList);
+        }
+
+        public static BusinessResult FromSuccess()
+        {
+            return new BusinessResult(true, null);
         }
     }
 
@@ -142,23 +142,9 @@ namespace E_Commerce.Business.Models
             return new BusinessResult<Produit>(true, null, businessResult);
         }
 
-        public static BusinessResult<T> FromError(string leProjetNExistePas, BusinessErrorReason registrationResultError)
-        {
-            return BusinessResult<T>.FromError(leProjetNExistePas, BusinessErrorReason.NotFound);
-        }
-
-        public static BusinessResult<Achats> Success(Achats achat)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static BusinessResult<Achats> Failure(string achatNotFound)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 
-    // Erreur métier (cas géré et attendu)
     public class BusinessError
     {
         // Message de l'erreur
@@ -173,9 +159,6 @@ namespace E_Commerce.Business.Models
             Reason = reason;
         }
     }
-
-    // Causes possibles d'une erreur métier
-    // La liste peut être augmentée au fil du développement
     public enum BusinessErrorReason
     {
         BusinessRule = 400,

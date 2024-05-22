@@ -15,6 +15,8 @@ namespace E_Commerce.Data.Context
         public DbSet<Produit> Produit { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +33,20 @@ namespace E_Commerce.Data.Context
             modelBuilder.Entity<WishlistItem>()
                 .HasOne(w => w.Produit)
                 .WithMany(p => p.WishlistItems)
+                .HasForeignKey(w => w.ProduitId);
+            
+            modelBuilder.Entity<CartItem>()
+                .HasKey(w => new { w.ClientId, w.ProduitId });
+
+            // Configuration des relations entre les entités
+            modelBuilder.Entity<CartItem>()
+                .HasOne(w => w.Client)
+                .WithMany(c => c.CartItems)
+                .HasForeignKey(w => w.ClientId);
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(w => w.Produit)
+                .WithMany(p => p.CartItems)
                 .HasForeignKey(w => w.ProduitId);
 
             modelBuilder.Entity<Site>().HasNoKey();

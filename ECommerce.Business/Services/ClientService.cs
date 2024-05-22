@@ -124,5 +124,61 @@ namespace E_Commerce.Business.Services
 
             return BusinessResult.FromSuccess();
         }
+        
+        
+        
+        
+        public BusinessResult AddToCart(int userId, int productId)
+        {
+            var user = _clientRepository.GetClientById(userId);
+            if (user == null)
+            {
+                return BusinessResult.FromError("User not found");
+            }
+
+            var produit = _produitRepository.GetProduitById(productId);
+            if (produit == null)
+            {
+                return BusinessResult.FromError($"Product with ID {productId} not found");
+            }
+
+            var cartItem = new CartItem
+            {
+                ClientId = userId,
+                ProduitId = produit.Id,
+                Produit = produit
+            };
+
+            var result = _clientRepository.AddToCart(userId, cartItem);
+            if (!result.IsSuccess)
+            {
+                return BusinessResult.FromError(result.Message, result.Error);
+            }
+
+            return BusinessResult.FromSuccess();
+        }
+
+
+        public BusinessResult<List<ProduitDto.CartProductDto>> GetCart(long userId)
+        {
+            var result = _clientRepository.GetCart(userId);
+            if (!result.IsSuccess)
+            {
+                return BusinessResult<List<ProduitDto.CartProductDto>>.FromError(result.Message, result.Error);
+            }
+
+            return BusinessResult<List<ProduitDto.CartProductDto>>.FromSuccess(result.Result);
+        }
+        
+        public BusinessResult RemoveFromCart(int userId, int productId)
+        {
+            var result = _clientRepository.RemoveFromCart(userId, productId);
+            if (!result.IsSuccess)
+            {
+                return BusinessResult.FromError(result.Message, result.Error);
+            }
+
+            return BusinessResult.FromSuccess();
+        }
     }
 }

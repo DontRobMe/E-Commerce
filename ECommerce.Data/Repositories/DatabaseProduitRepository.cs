@@ -76,26 +76,6 @@ public class DatabaseProduitRepository : IProduitRepository
             Result = produit
         };
     }
-    public BusinessResult<Produit> UpdateRating(long ProduitId, int rating)
-    {
-        var produit = _dbContext.Produit?.FirstOrDefault(u => u.Id == ProduitId);
-        if (produit == null)
-        {
-            return new BusinessResult<Produit>
-            {
-                IsSuccess = false,
-                Message = "Produit not found"
-            };
-        }
-        produit.Rating = rating;
-        _dbContext.SaveChanges();
-        return new BusinessResult<Produit>
-        {
-            IsSuccess = true,
-            Message = "Rating updated successfully",
-            Result = produit
-        };
-    }
     public Produit GetProduitByName(string name)
     {
         return _dbContext.Produit?.FirstOrDefault(u => u.Name == name)!;
