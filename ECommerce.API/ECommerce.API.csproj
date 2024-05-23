@@ -26,8 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="C:\Users\GourbalFrançois\RiderProjects\E-Commerce\ECommerce.Business\ECommerce.Business.csproj" />
-        <ProjectReference Include="C:\Users\GourbalFrançois\RiderProjects\E-Commerce\ECommerce.Data\ECommerce.Data.csproj" />
+        <ProjectReference Include="C:\Users\Gourbal François\RiderProjects\E-Commerce\ECommerce.Business\ECommerce.Business.csproj" />
+        <ProjectReference Include="C:\Users\Gourbal François\RiderProjects\E-Commerce\ECommerce.Data\ECommerce.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup>
