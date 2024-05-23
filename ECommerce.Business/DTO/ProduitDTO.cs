@@ -29,6 +29,7 @@ public class ProduitDto
         public string ProduitName { get; set; }
         public decimal ProduitPrice { get; set; }
         public string ProduitImage { get; set; }
+        public string ProduitCategory { get; set; }
     }
 
 }

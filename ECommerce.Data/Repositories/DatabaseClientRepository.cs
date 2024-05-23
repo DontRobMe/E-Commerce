@@ -319,37 +319,38 @@ public class DatabaseClientRepository : IClientRepository
 
 
 
-    public BusinessResult<List<ProduitDto.CartProductDto>> GetCart(long userId)
-    {
-        var user = _dbContext.Client
-            .Include(u => u.CartItems)
-            .ThenInclude(w => w.Produit)
-            .FirstOrDefault(u => u.Id == userId);
-
-        if (user == null)
+        public BusinessResult<List<ProduitDto.CartProductDto>> GetCart(long userId)
         {
+            var user = _dbContext.Client
+                .Include(u => u.CartItems)
+                .ThenInclude(w => w.Produit)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return new BusinessResult<List<ProduitDto.CartProductDto>>
+                {
+                    IsSuccess = false,
+                    Message = "User not found"
+                };
+            }
+
+            var cartProducts = user.CartItems.Select(w => new ProduitDto.CartProductDto
+            {
+                ProduitId = w.Produit.Id,
+                ProduitName = w.Produit.Name,
+                ProduitImage = w.Produit.Image,
+                ProduitPrice = w.Produit.Price,
+                ProduitCategory = w.Produit.Category
+            }).ToList();
+
             return new BusinessResult<List<ProduitDto.CartProductDto>>
             {
-                IsSuccess = false,
-                Message = "User not found"
+                IsSuccess = true,
+                Message = "Wishlist found",
+                Result = cartProducts
             };
         }
-
-        var cartProducts = user.CartItems.Select(w => new ProduitDto.CartProductDto
-        {
-            ProduitId = w.Produit.Id,
-            ProduitName = w.Produit.Name,
-            ProduitImage = w.Produit.Image,
-            ProduitPrice = w.Produit.Price
-        }).ToList();
-
-        return new BusinessResult<List<ProduitDto.CartProductDto>>
-        {
-            IsSuccess = true,
-            Message = "Wishlist found",
-            Result = cartProducts
-        };
-    }
 
     public BusinessResult RemoveFromCart(int userId, int productId)
     {

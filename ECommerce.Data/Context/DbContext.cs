@@ -13,9 +13,9 @@ namespace E_Commerce.Data.Context
         public DbSet<Admin> Admin { get; set; }
         public DbSet<Achats> Achats { get; set; }
         public DbSet<Produit> Produit { get; set; }
-        public DbSet<Site> Sites { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Facture> Factures { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,8 +48,15 @@ namespace E_Commerce.Data.Context
                 .HasOne(w => w.Produit)
                 .WithMany(p => p.CartItems)
                 .HasForeignKey(w => w.ProduitId);
+            
+            modelBuilder.Entity<Facture>()
+                .HasKey(f => f.Id);
 
-            modelBuilder.Entity<Site>().HasNoKey();
+            modelBuilder.Entity<Facture>()
+                .HasOne(f => f.Client)
+                .WithMany(c => c.Factures)
+                .HasForeignKey(f => f.ClientId);
+
 
             base.OnModelCreating(modelBuilder);
         }

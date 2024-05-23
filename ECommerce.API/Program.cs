@@ -22,7 +22,6 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAchatsService, AchatService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IProduitService, ProduitService>();
-builder.Services.AddScoped<ISiteService, SiteService>();
 builder.Services.AddScoped<IClientRepository, DatabaseClientRepository>();
 builder.Services.AddScoped<IAchatsRepository, DatabaseAchatsRepository>();
 builder.Services.AddScoped<IAdminRepository, DatabaseAdminRepository>();

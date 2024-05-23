@@ -46,11 +46,6 @@ namespace E_Commerce.Business.Models
             return new BusinessResult<Clients>(true, null, businessResult.Result);
         }
 
-        public static BusinessResult FromSuccess(BusinessResult<Site> existingProject)
-        {
-            return new BusinessResult(true, null);
-        }
-
         public static BusinessResult FromError(string registrationResultMessage, BusinessError? registrationResultError,
             string userToken)
         {
@@ -127,10 +122,7 @@ namespace E_Commerce.Business.Models
             return new BusinessResult<Admin>(true, null, updatedTask);
         }
 
-        public static BusinessResult<Site> FromSuccess(Site businessResult)
-        {
-            return new BusinessResult<Site>(true, null, businessResult);
-        }
+       
         
         public static BusinessResult<Clients> FromSuccess(Clients businessResult)
         {

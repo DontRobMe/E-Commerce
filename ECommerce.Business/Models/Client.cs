@@ -12,5 +12,6 @@ public class Clients
 
     public List<WishlistItem> Wishlist { get; set; }
     public List<CartItem> CartItems { get; set; }
-
+    
+    public List<Facture> Factures { get; set; }
 }
