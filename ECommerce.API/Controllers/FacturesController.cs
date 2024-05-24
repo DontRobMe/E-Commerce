@@ -21,7 +21,6 @@ namespace E_Commerce.Controllers
             _factureService = factureService ?? throw new ArgumentNullException(nameof(factureService));
         }
         
-        //getfacturebyid
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetFactureById(int id)
         {

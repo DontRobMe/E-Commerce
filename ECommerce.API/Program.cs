@@ -7,7 +7,6 @@ using E_Commerce.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuration des services
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

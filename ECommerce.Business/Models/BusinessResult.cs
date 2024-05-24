@@ -83,7 +83,7 @@ namespace E_Commerce.Business.Models
         }
     }
 
-    public class BusinessResult<T> : BusinessResult // Hérite du résultat sans retour
+    public class BusinessResult<T> : BusinessResult
     {
         public T Result { get; set; }
         public string Token { get; set; }
@@ -139,10 +139,8 @@ namespace E_Commerce.Business.Models
 
     public class BusinessError
     {
-        // Message de l'erreur
         public string ErrorMessage { get; set; }
 
-        // Cause de l'erreur, utile pour déterminer le statut http
         public BusinessError? Reason { get; set; }
 
         public BusinessError(string errorMessage, BusinessError? reason)

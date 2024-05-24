@@ -32,7 +32,6 @@ namespace E_Commerce.Data.Repositories
         }
 
 
-        //rechercher par id de user dans la tabble
         public async Task<List<Facture>> GetFactureById(int id)
         {
             return await _dbContext.Factures.Where(f => f.ClientId == id)

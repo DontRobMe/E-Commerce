@@ -21,11 +21,9 @@ namespace E_Commerce.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuration de la clé primaire composite pour WishlistItem
             modelBuilder.Entity<WishlistItem>()
                 .HasKey(w => new { w.ClientId, w.ProduitId });
 
-            // Configuration des relations entre les entités
             modelBuilder.Entity<WishlistItem>()
                 .HasOne(w => w.Client)
                 .WithMany(c => c.Wishlist)
@@ -39,7 +37,6 @@ namespace E_Commerce.Data.Context
             modelBuilder.Entity<CartItem>()
                 .HasKey(w => new { w.ClientId, w.ProduitId });
 
-            // Configuration des relations entre les entités
             modelBuilder.Entity<CartItem>()
                 .HasOne(w => w.Client)
                 .WithMany(c => c.CartItems)
