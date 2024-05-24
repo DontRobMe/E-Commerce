@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using E_Commerce.Business.Models;
 
-namespace E_Commerce.Business.IRepositories
+namespace E_Commerce.Business.IServices
 {
-    public interface IFactureRepository
+    public interface IFactureService
     {
-        Task AddFacture(FactureDto facture);
         public Task<List<Facture>> GetFactureById(int id);
+        Task AddFacture(FactureDto facture);
         public Task<Facture> GetFactureByIdf(int id);
-
     }
 }

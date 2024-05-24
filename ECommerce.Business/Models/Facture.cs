@@ -1,14 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace E_Commerce.Business.Models;
-
-public class Facture
+namespace E_Commerce.Business.Models
 {
-    public int Id { get; set; }
-    public Clients Client { get; set; }
-    public int ClientId { get; set; }
-    public DateTime Date { get; set; }
-
-    [Column(TypeName = "varbinary(max)")]
-    public byte[] FichierPDF { get; set; } // Propriété pour stocker le fichier PDF
+    public class Facture
+    {
+        public int Id { get; set; }
+        public Clients Client { get; set; }
+        public int ClientId { get; set; }
+        public DateTime Date { get; set; }
+        public string FichierPDF { get; set; }
+    }
 }

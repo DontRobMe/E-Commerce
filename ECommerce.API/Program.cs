@@ -22,11 +22,13 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAchatsService, AchatService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IProduitService, ProduitService>();
+builder.Services.AddScoped<IFactureService, FactureService>();
 builder.Services.AddScoped<IClientRepository, DatabaseClientRepository>();
 builder.Services.AddScoped<IAchatsRepository, DatabaseAchatsRepository>();
 builder.Services.AddScoped<IAdminRepository, DatabaseAdminRepository>();
 builder.Services.AddScoped<IProduitRepository, DatabaseProduitRepository>();
 builder.Services.AddScoped<ISiteRepository, DatabaseSiteRepository>();
+builder.Services.AddScoped<IFactureRepository, DatabaseFactureRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -41,7 +43,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configuration du pipeline de requête
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

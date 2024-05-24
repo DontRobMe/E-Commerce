@@ -1,3 +1,4 @@
+using E_Commerce.Business.DTO;
 using E_Commerce.Business.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,8 +57,7 @@ namespace E_Commerce.Data.Context
                 .HasOne(f => f.Client)
                 .WithMany(c => c.Factures)
                 .HasForeignKey(f => f.ClientId);
-
-
+            
             base.OnModelCreating(modelBuilder);
         }
     }
